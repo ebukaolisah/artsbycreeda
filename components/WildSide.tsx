@@ -50,6 +50,24 @@ const PIECES: PopPiece[] = [
     rotate: 3,
     accent: 'from-orange-500/30 via-red-500/20 to-amber-300/30',
   },
+  {
+    id: 'urban-05',
+    src: '/artworks/pop/pop-05.png',
+    title: 'Neon Saint',
+    caption: 'Halos look different under city light.',
+    tag: 'Urban · Sacred',
+    rotate: -2,
+    accent: 'from-emerald-400/30 via-fuchsia-500/20 to-yellow-300/30',
+  },
+  {
+    id: 'urban-06',
+    src: '/artworks/pop/pop-06.png',
+    title: 'Concrete Royalty',
+    caption: 'Born on the block, painted like a king.',
+    tag: 'Street · Portrait',
+    rotate: 2,
+    accent: 'from-amber-500/30 via-pink-500/20 to-indigo-500/30',
+  },
 ];
 
 export default function WildSide() {

@@ -6,7 +6,13 @@
       "PowerShell(npm --version)",
       "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3000\" -UseBasicParsing -TimeoutSec 90; \"Status: $\\($r.StatusCode\\)\"; \"Length: $\\($r.Content.Length\\) bytes\" } catch { \"Error: $_\" })",
       "mcp__Claude_Preview__preview_start",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "PowerShell($ghPath = \"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\"; $alt = \"$env:LOCALAPPDATA\\\\Programs\\\\GitHub CLI\\\\gh.exe\"; @\\($ghPath, $alt\\) | ForEach-Object { if \\(Test-Path $_\\) { \"FOUND: $_\"; & $_ --version 2>&1 | Select-Object -First 1 } }; \"---\"; Get-Process winget,msiexec -ErrorAction SilentlyContinue | Format-Table Name, Id -AutoSize)",
+      "WebFetch(domain:artsbycreeda.vercel.app)",
+      "Bash(curl -s -o /dev/null -w \"commission:%{http_code} thanks:\" http://localhost:3000/commission)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} admin-login:\" \"http://localhost:3000/thanks?ref=test\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} home:\" http://localhost:3000/admin/login)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000)"
     ]
   }
 }

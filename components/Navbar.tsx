@@ -58,9 +58,7 @@ export default function Navbar() {
           </nav>
 
           <a
-            href={BRAND.gumroadUrl}
-            target="_blank"
-            rel="noreferrer"
+            href={BRAND.commissionPath}
             className="hidden md:inline-flex btn-primary !px-6 !py-3 !text-[11px]"
           >
             Commission
@@ -110,9 +108,8 @@ export default function Navbar() {
                 </motion.a>
               ))}
               <motion.a
-                href={BRAND.gumroadUrl}
-                target="_blank"
-                rel="noreferrer"
+                href={BRAND.commissionPath}
+                onClick={() => setOpen(false)}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}

@@ -1,23 +1,15 @@
 'use client';
 
-import { useState, useMemo, useEffect, useCallback, forwardRef } from 'react';
+import { useState, useEffect, useCallback, forwardRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Expand } from 'lucide-react';
-import { ARTWORKS, CATEGORIES, type Artwork, type ArtworkCategory } from '@/lib/artworks';
+import { ARTWORKS, type Artwork } from '@/lib/artworks';
 import { BRAND } from '@/lib/constants';
 
-type Filter = 'All' | ArtworkCategory;
-
-const FILTERS: Filter[] = ['All', ...CATEGORIES];
-
 export default function Gallery() {
-  const [filter, setFilter] = useState<Filter>('All');
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-  const filtered = useMemo(
-    () => (filter === 'All' ? ARTWORKS : ARTWORKS.filter((a) => a.category === filter)),
-    [filter]
-  );
+  const filtered = ARTWORKS;
 
   const active = activeIndex !== null ? filtered[activeIndex] : null;
 
@@ -51,50 +43,29 @@ export default function Gallery() {
     <section id="gallery" className="relative bg-charcoal py-32">
       <div className="container-art">
         {/* Header */}
-        <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
+        <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div>
             <div className="flex items-center gap-3">
               <span className="h-px w-10 bg-gold" />
-              <span className="eyebrow">Selected Work · 2024–2025</span>
+              <span className="eyebrow">Selected Work · The Studio Six</span>
             </div>
             <h2 className="display-text mt-6 text-5xl md:text-6xl lg:text-7xl">
               The <span className="italic gold-text">Portfolio</span>.
             </h2>
             <p className="mt-4 max-w-md font-sans text-ivory/60">
-              Hover any piece to explore. Click to open the full study.
+              Six pieces. One voice for each chapter of the studio. Click any to
+              open the full study.
             </p>
           </div>
 
-          {/* Category pills */}
-          <div className="flex flex-wrap gap-2">
-            {FILTERS.map((f) => (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`relative rounded-full px-4 py-2 font-sans text-[11px] uppercase tracking-widest transition-all ${
-                  filter === f
-                    ? 'text-charcoal'
-                    : 'text-ivory/60 hover:text-ivory'
-                }`}
-              >
-                {filter === f && (
-                  <motion.span
-                    layoutId="filter-bg"
-                    className="absolute inset-0 rounded-full bg-gold"
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                  />
-                )}
-                <span className="relative">{f}</span>
-              </button>
-            ))}
+          <div className="hidden md:flex items-center gap-2 rounded-full border border-ivory/10 bg-ivory/[0.02] px-4 py-2 font-sans text-[10px] uppercase tracking-widest text-ivory/60">
+            <span className="h-1.5 w-1.5 rounded-full bg-gold animate-pulse" />
+            <span>Curated collection · 2025</span>
           </div>
         </div>
 
         {/* Grid */}
-        <motion.div
-          layout
-          className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
-        >
+        <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence>
             {filtered.map((art, i) => (
               <ArtworkCard
@@ -105,13 +76,7 @@ export default function Gallery() {
               />
             ))}
           </AnimatePresence>
-        </motion.div>
-
-        {filtered.length === 0 && (
-          <div className="mt-20 text-center font-sans text-ivory/40">
-            No work in this category yet — check back soon.
-          </div>
-        )}
+        </div>
       </div>
 
       {/* Lightbox */}
@@ -197,12 +162,7 @@ export default function Gallery() {
                     {active.description}
                   </p>
                 )}
-                <a
-                  href={BRAND.gumroadUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn-primary mt-8 self-start"
-                >
+                <a href={BRAND.commissionPath} className="btn-primary mt-8 self-start">
                   Commission a Similar Piece
                 </a>
               </div>

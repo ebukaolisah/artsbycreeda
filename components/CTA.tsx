@@ -54,12 +54,10 @@ export default function CTA() {
             className="mt-12 flex flex-wrap items-center justify-center gap-6"
           >
             <a
-              href={BRAND.gumroadUrl}
-              target="_blank"
-              rel="noreferrer"
+              href={BRAND.commissionPath}
               className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full bg-gold px-10 py-5 font-sans text-sm font-medium uppercase tracking-widest text-charcoal shadow-[0_0_60px_-10px_rgba(212,175,55,0.5)] transition-all duration-500 hover:bg-teal hover:shadow-[0_0_80px_-10px_rgba(68,225,216,0.6)]"
             >
-              <span className="relative">Buy & Upload on Gumroad</span>
+              <span className="relative">Start Your Commission</span>
               <ArrowUpRight
                 size={18}
                 className="relative transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1"
@@ -68,7 +66,7 @@ export default function CTA() {
           </motion.div>
 
           <p className="mt-6 font-sans text-xs uppercase tracking-widest text-ivory/40">
-            Secure checkout · Instant upload · 24–48 hr delivery
+            Paystack-secured · Direct from the studio · 24–48 hr delivery
           </p>
         </motion.div>
       </div>

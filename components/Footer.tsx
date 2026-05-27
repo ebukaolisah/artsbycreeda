@@ -76,12 +76,10 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href={BRAND.gumroadUrl}
-                  target="_blank"
-                  rel="noreferrer"
+                  href={BRAND.commissionPath}
                   className="text-ivory/70 transition-colors hover:text-gold"
                 >
-                  Commission on Gumroad
+                  Start a commission
                 </a>
               </li>
             </ul>

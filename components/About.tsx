@@ -108,7 +108,7 @@ export default function About() {
           </div>
 
           <div className="mt-12">
-            <a href={BRAND.gumroadUrl} target="_blank" rel="noreferrer" className="btn-primary">
+            <a href={BRAND.commissionPath} className="btn-primary">
               Begin Your Commission
             </a>
           </div>
