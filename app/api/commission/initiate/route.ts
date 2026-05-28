@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { put } from '@vercel/blob';
 import { ensureSchema, createOrder, attachPaystack } from '@/lib/db';
 import { initializeTransaction } from '@/lib/paystack';
+import { sendTelegramPhoto, pendingCaption } from '@/lib/telegram';
 import { SIZES, priceOf, type Style, type SizeId } from '@/lib/pricing';
 import { generateOrderRef } from '@/lib/refgen';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
@@ -44,15 +45,26 @@ export async function POST(req: NextRequest) {
 
     const ref = generateOrderRef();
 
-    // 1. Upload reference photo to Vercel Blob (private)
+    // 1. Send photo straight to Creeda's Telegram with a PENDING caption
+    const buf = Buffer.from(await refPhoto.arrayBuffer());
     const ext = refPhoto.type.includes('png') ? 'png' : 'jpg';
-    const blob = await put(`refs/${ref}.${ext}`, refPhoto, {
-      access: 'public',
-      contentType: refPhoto.type,
-      addRandomSuffix: false,
-    });
+    const { file_id, message_id } = await sendTelegramPhoto(
+      buf,
+      `${ref}.${ext}`,
+      refPhoto.type,
+      pendingCaption({
+        ref,
+        style,
+        size_label: size.label,
+        amount_ngn: amount,
+        name,
+        email,
+        phone,
+        notes,
+      })
+    );
 
-    // 2. Create order row (status=pending)
+    // 2. Save order row with Telegram references (no photo bytes ever stored in our DB)
     await createOrder({
       ref,
       style,
@@ -63,7 +75,8 @@ export async function POST(req: NextRequest) {
       email,
       phone,
       notes,
-      ref_photo_url: blob.url,
+      telegram_file_id: file_id,
+      telegram_message_id: message_id,
     });
 
     // 3. Initialize Paystack transaction

@@ -128,13 +128,13 @@ export default function AdminClient({ initialOrders }: { initialOrders: Order[] 
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="flex items-center gap-4">
                   <a
-                    href={o.ref_photo_url}
+                    href={`/api/admin/orders/${o.ref}/photo`}
                     target="_blank"
                     rel="noreferrer"
                     className="block h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-ivory/10"
                   >
                     <img
-                      src={o.ref_photo_url}
+                      src={`/api/admin/orders/${o.ref}/photo`}
                       alt="Reference"
                       className="h-full w-full object-cover"
                       onError={(e) => {
@@ -192,7 +192,7 @@ export default function AdminClient({ initialOrders }: { initialOrders: Order[] 
                     Reference photo
                   </div>
                   <a
-                    href={o.ref_photo_url}
+                    href={`/api/admin/orders/${o.ref}/photo`}
                     target="_blank"
                     rel="noreferrer"
                     className="mt-1 inline-flex items-center gap-1.5 font-sans text-sm text-gold hover:underline"

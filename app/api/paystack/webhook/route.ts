@@ -6,7 +6,7 @@ import {
   getOrderByPaystackRef,
 } from '@/lib/db';
 import { verifyWebhookSignature, verifyTransaction } from '@/lib/paystack';
-import { notifyNewPaidOrder } from '@/lib/telegram';
+import { editTelegramCaption, paidCaption } from '@/lib/telegram';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -26,7 +26,6 @@ export async function POST(req: NextRequest) {
 
     const event = JSON.parse(rawBody);
     if (event.event !== 'charge.success') {
-      // Other events (refunds, transfers, etc.) — ignore for now
       return NextResponse.json({ ok: true, ignored: event.event });
     }
 
@@ -35,19 +34,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No reference in event' }, { status: 400 });
     }
 
-    // Verify via Paystack API as a second check (don't trust webhook payload blindly)
+    // Double-check via Paystack API
     const verified = await verifyTransaction(psRef);
     if (verified.status !== 'success') {
       return NextResponse.json({ ok: true, status: verified.status });
     }
 
-    // Mark paid (idempotent — markPaid only flips status if currently pending)
     let order = await markPaid(psRef);
     if (!order) {
-      // Already processed
       order = await getOrderByPaystackRef(psRef);
-      if (order && order.status === 'paid') {
-        // Already paid AND notified? Skip
+      if (order && order.status === 'paid' && order.notified_at) {
         return NextResponse.json({ ok: true, status: 'already_processed' });
       }
     }
@@ -55,14 +51,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Order not found' }, { status: 404 });
     }
 
-    // Notify via Telegram
+    // Update the existing Telegram photo's caption: PENDING → PAID
     const base = process.env.NEXT_PUBLIC_BASE_URL || new URL(req.url).origin;
     try {
-      await notifyNewPaidOrder(order, `${base}/admin?ref=${encodeURIComponent(order.ref)}`);
+      if (order.telegram_message_id) {
+        await editTelegramCaption(
+          order.telegram_message_id,
+          paidCaption(order, `${base}/admin?ref=${encodeURIComponent(order.ref)}`)
+        );
+      }
       await markNotified(order.ref);
     } catch (e: any) {
-      console.error('[paystack/webhook] telegram failed:', e?.message);
-      // Don't fail the webhook — Paystack will retry, and we already marked paid
+      console.error('[paystack/webhook] telegram update failed:', e?.message);
+      // Non-fatal — order is already marked paid
     }
 
     return NextResponse.json({ ok: true });

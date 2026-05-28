@@ -19,9 +19,13 @@ export interface Order {
   email: string;
   phone: string;
   notes: string | null;
-  ref_photo_url: string;
+  // Telegram-hosted reference photo
+  telegram_file_id: string | null;
+  telegram_message_id: number | null;
+  // Paystack
   paystack_reference: string | null;
   paystack_authorization_url: string | null;
+  // Lifecycle
   status: OrderStatus;
   notified_at: string | null;
   paid_at: string | null;
@@ -32,7 +36,6 @@ export interface Order {
 
 /**
  * Idempotent — safe to call on every cold start.
- * Creates the orders table if it doesn't exist.
  */
 export async function ensureSchema() {
   await sql`
@@ -47,7 +50,8 @@ export async function ensureSchema() {
       email TEXT NOT NULL,
       phone TEXT NOT NULL,
       notes TEXT,
-      ref_photo_url TEXT NOT NULL,
+      telegram_file_id TEXT,
+      telegram_message_id INTEGER,
       paystack_reference TEXT,
       paystack_authorization_url TEXT,
       status TEXT NOT NULL DEFAULT 'pending',
@@ -58,17 +62,37 @@ export async function ensureSchema() {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `;
+  // Migrations for accounts that still have ref_photo_url column from earlier shape
+  await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS telegram_file_id TEXT`;
+  await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS telegram_message_id INTEGER`;
   await sql`CREATE INDEX IF NOT EXISTS orders_status_idx ON orders(status)`;
   await sql`CREATE INDEX IF NOT EXISTS orders_paystack_ref_idx ON orders(paystack_reference)`;
 }
 
-export async function createOrder(input: Omit<Order, 'id' | 'paystack_reference' | 'paystack_authorization_url' | 'status' | 'notified_at' | 'paid_at' | 'delivered_at' | 'created_at' | 'updated_at'>) {
+type CreateOrderInput = {
+  ref: string;
+  style: 'charcoal' | 'urban';
+  size_id: string;
+  size_label: string;
+  amount_ngn: number;
+  name: string;
+  email: string;
+  phone: string;
+  notes: string | null;
+  telegram_file_id: string;
+  telegram_message_id: number;
+};
+
+export async function createOrder(input: CreateOrderInput) {
   const { rows } = await sql<Order>`
     INSERT INTO orders (
-      ref, style, size_id, size_label, amount_ngn, name, email, phone, notes, ref_photo_url
+      ref, style, size_id, size_label, amount_ngn,
+      name, email, phone, notes,
+      telegram_file_id, telegram_message_id
     ) VALUES (
       ${input.ref}, ${input.style}, ${input.size_id}, ${input.size_label}, ${input.amount_ngn},
-      ${input.name}, ${input.email}, ${input.phone}, ${input.notes}, ${input.ref_photo_url}
+      ${input.name}, ${input.email}, ${input.phone}, ${input.notes},
+      ${input.telegram_file_id}, ${input.telegram_message_id}
     )
     RETURNING *
   `;
