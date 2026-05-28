@@ -2,15 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Moon, Sun, ArrowUpRight } from 'lucide-react';
 import { BRAND, NAV_LINKS } from '@/lib/constants';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -19,61 +20,103 @@ export default function Navbar() {
   return (
     <>
       <motion.header
-        initial={{ y: -32, opacity: 0 }}
+        initial={{ y: -24, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? 'border-b border-ivory/5 bg-charcoal/70 backdrop-blur-xl'
-            : 'bg-transparent'
-        }`}
+        className="pointer-events-none fixed inset-x-0 top-0 z-50 px-3 pt-3 md:px-6 md:pt-5"
       >
-        <div className="container-art flex h-20 items-center justify-between">
-          <a href="#top" className="group flex items-center gap-3">
-            <span className="relative grid h-9 w-9 place-items-center overflow-hidden rounded-full border border-gold/40">
-              <span className="absolute inset-0 bg-gold-gradient opacity-60 transition-opacity group-hover:opacity-100" />
-              <span className="relative font-serif text-lg font-semibold text-charcoal">C</span>
-            </span>
-            <span className="flex flex-col leading-none">
-              <span className="font-serif text-xl tracking-tight text-ivory">
+        <div className="container-art pointer-events-auto">
+          <div
+            className={`flex items-center justify-between gap-3 rounded-[28px] border px-3 py-2 transition-all duration-500 md:px-4 md:py-2.5 ${
+              scrolled
+                ? 'border-ivory/10 bg-charcoal/75 shadow-[0_18px_60px_-20px_rgba(0,0,0,0.6)] backdrop-blur-2xl'
+                : 'border-ivory/[0.06] bg-charcoal/40 backdrop-blur-xl'
+            }`}
+          >
+            {/* Logo */}
+            <a href="#top" className="group flex items-center gap-2.5 pl-1">
+              <span className="relative grid h-8 w-8 place-items-center overflow-hidden rounded-full border border-gold/40">
+                <span className="absolute inset-0 bg-gold-gradient opacity-70 transition-opacity group-hover:opacity-100" />
+                <span className="relative font-serif text-base font-semibold text-charcoal">C</span>
+              </span>
+              <span className="font-serif text-[17px] tracking-tight text-ivory md:text-lg">
                 {BRAND.name}
               </span>
-              <span className="mt-1 hidden font-sans text-[9px] uppercase tracking-widest text-ivory/40 md:block">
-                Charcoal Portraiture · est. mastery
-              </span>
-            </span>
-          </a>
+            </a>
 
-          <nav className="hidden items-center gap-1 md:flex">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="group relative px-4 py-2 font-sans text-xs uppercase tracking-[0.2em] text-ivory/70 transition-colors hover:text-ivory"
+            {/* Center nav */}
+            <nav className="hidden items-center gap-0.5 md:flex">
+              {NAV_LINKS.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="group relative rounded-full px-3.5 py-1.5 font-sans text-[12px] text-ivory/75 transition-colors hover:text-ivory"
+                >
+                  <span className="relative">{link.label}</span>
+                </a>
+              ))}
+            </nav>
+
+            {/* Right cluster: theme toggle + Commission */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                aria-label="Toggle theme"
+                title="Theme (decorative)"
+                className="relative grid h-9 w-9 place-items-center rounded-full border border-ivory/10 bg-ivory/[0.03] text-ivory/70 transition-colors hover:border-gold/40 hover:text-gold"
               >
-                {link.label}
-                <span className="pointer-events-none absolute inset-x-4 -bottom-0 h-px origin-left scale-x-0 bg-gold transition-transform duration-500 group-hover:scale-x-100" />
+                <AnimatePresence mode="wait" initial={false}>
+                  {theme === 'dark' ? (
+                    <motion.span
+                      key="moon"
+                      initial={{ rotate: -90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: 90, opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="absolute inset-0 grid place-items-center"
+                    >
+                      <Moon size={14} strokeWidth={1.5} />
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="sun"
+                      initial={{ rotate: 90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: -90, opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="absolute inset-0 grid place-items-center"
+                    >
+                      <Sun size={14} strokeWidth={1.5} />
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </button>
+
+              <a
+                href={BRAND.commissionPath}
+                className="group hidden items-center gap-1.5 rounded-full bg-gold px-4 py-2 font-sans text-[11px] font-medium uppercase tracking-widest text-charcoal transition-all duration-300 hover:bg-teal md:inline-flex"
+              >
+                <span>Commission</span>
+                <ArrowUpRight
+                  size={13}
+                  className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
               </a>
-            ))}
-          </nav>
 
-          <a
-            href={BRAND.commissionPath}
-            className="hidden md:inline-flex btn-primary !px-6 !py-3 !text-[11px]"
-          >
-            Commission
-          </a>
-
-          <button
-            aria-label="Open menu"
-            onClick={() => setOpen(true)}
-            className="md:hidden grid h-10 w-10 place-items-center rounded-full border border-ivory/10 text-ivory/80"
-          >
-            <Menu size={18} />
-          </button>
+              {/* Mobile hamburger */}
+              <button
+                aria-label="Open menu"
+                onClick={() => setOpen(true)}
+                className="grid h-9 w-9 place-items-center rounded-full border border-ivory/10 bg-ivory/[0.03] text-ivory/80 md:hidden"
+              >
+                <Menu size={15} />
+              </button>
+            </div>
+          </div>
         </div>
       </motion.header>
 
+      {/* Mobile menu */}
       <AnimatePresence>
         {open && (
           <motion.div

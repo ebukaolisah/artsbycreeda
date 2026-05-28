@@ -131,7 +131,7 @@ export default function StructuredShowcase({
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-7"
           >
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] border border-ivory/10 bg-charcoal shadow-[0_30px_120px_-30px_rgba(0,0,0,0.7)]">
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[32px] border border-ivory/10 bg-charcoal shadow-[0_40px_140px_-40px_rgba(0,0,0,0.8)] ring-1 ring-inset ring-ivory/[0.04]">
               <AnimatePresence mode="wait">
                 <motion.img
                   key={hero.id}
@@ -220,16 +220,23 @@ export default function StructuredShowcase({
             transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="flex flex-col lg:col-span-5"
           >
-            <div className="mb-3 flex items-center justify-between">
-              <span className="inline-flex items-center gap-2 font-sans text-sm text-ivory/80">
+            {/* Latest Work header bar — its own little panel */}
+            <div className="mb-3 flex items-center justify-between rounded-[20px] border border-ivory/[0.08] bg-ivory/[0.02] px-5 py-3 backdrop-blur-sm">
+              <span className="inline-flex items-center gap-2 font-sans text-[13px] text-ivory">
                 {latestLabel}
-                <span className="text-gold">↓</span>
+                <motion.span
+                  animate={{ y: [0, 3, 0] }}
+                  transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+                  className="text-gold"
+                >
+                  ↓
+                </motion.span>
               </span>
               <a
                 href={BRAND.commissionPath}
-                className="font-sans text-xs uppercase tracking-widest text-ivory/60 underline-offset-4 transition-colors hover:text-gold hover:underline"
+                className="font-sans text-[11px] uppercase tracking-[0.18em] text-ivory/70 underline underline-offset-[6px] decoration-ivory/30 transition-colors hover:text-gold hover:decoration-gold"
               >
-                Commission
+                View All
               </a>
             </div>
 
@@ -356,7 +363,7 @@ const PieceCard = forwardRef<
       ref={ref}
       whileHover={{ y: -3 }}
       transition={{ duration: 0.3 }}
-      className="group relative overflow-hidden rounded-2xl border border-ivory/10 bg-charcoal"
+      className="group relative overflow-hidden rounded-[22px] border border-ivory/[0.08] bg-charcoal shadow-[0_18px_60px_-30px_rgba(0,0,0,0.6)] ring-1 ring-inset ring-ivory/[0.03]"
     >
       <button
         onClick={onClick}
@@ -369,22 +376,23 @@ const PieceCard = forwardRef<
           alt={piece.title}
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-charcoal/70 via-transparent to-charcoal/85" />
+        {/* Subtle vignette */}
+        <div className="absolute inset-0 bg-gradient-to-b from-charcoal/60 via-transparent to-charcoal/80" />
 
-        {/* Top-left: category label (folder-tab style) */}
-        <div className="absolute left-3 top-3 right-3">
-          <span className="font-sans text-[11px] uppercase tracking-[0.2em] text-ivory/90">
+        {/* Top-left: category label */}
+        <div className="absolute left-4 top-3.5">
+          <span className="font-sans text-[12px] tracking-[0.02em] text-ivory">
             {piece.category}
           </span>
         </div>
 
-        {/* Top-right: zoom hint */}
-        <div className="absolute right-3 top-3 grid h-7 w-7 place-items-center rounded-full border border-ivory/20 bg-charcoal/60 text-ivory/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        {/* Top-right: zoom hint (shows on hover) */}
+        <div className="absolute right-3 top-3 grid h-7 w-7 place-items-center rounded-full border border-ivory/15 bg-charcoal/60 text-ivory/80 opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
           <Expand size={11} />
         </div>
 
         {/* Bottom: title (appears on hover) */}
-        <div className="absolute inset-x-3 bottom-3 translate-y-1 transform opacity-90 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+        <div className="absolute inset-x-4 bottom-3.5 translate-y-1 transform opacity-90 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
           <div className="font-serif text-sm italic text-ivory md:text-base">
             {piece.title}
           </div>
