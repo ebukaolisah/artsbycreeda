@@ -68,6 +68,7 @@ export default function WildSide() {
       subtitle="When charcoal isn't loud enough. A separate body of work where icons get re-imagined in pigment, lightning, and smoke."
       pieces={PIECES}
       latestLabel="The Wild Collection"
+      accent="neon"
     />
   );
 }

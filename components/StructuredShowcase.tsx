@@ -39,6 +39,8 @@ interface Props {
   pieces: ShowcasePiece[];
   /** Used in the right-column header (defaults to "Latest Work") */
   latestLabel?: string;
+  /** Hover accent line under cards: 'gold' (charcoal section) | 'neon' (wild side) */
+  accent?: 'gold' | 'neon';
 }
 
 export default function StructuredShowcase({
@@ -48,6 +50,7 @@ export default function StructuredShowcase({
   subtitle,
   pieces,
   latestLabel = 'Latest Work',
+  accent = 'gold',
 }: Props) {
   const [heroIndex, setHeroIndex] = useState(0);
   const [lightbox, setLightbox] = useState<number | null>(null);
@@ -103,22 +106,25 @@ export default function StructuredShowcase({
   };
 
   return (
-    <section id={id} className="relative bg-charcoal py-24 md:py-32">
+    <section id={id} className="relative bg-charcoal py-12 md:py-16">
       <div className="container-art">
-        {/* Section header */}
-        <div className="mb-10 flex flex-col items-start justify-between gap-4 md:mb-12 md:flex-row md:items-end">
-          <div>
+        {/* Compact section header — slim so the whole gallery fits in one viewport */}
+        <div className="mb-5 flex items-baseline justify-between gap-4">
+          <div className="flex items-baseline gap-4">
             <div className="flex items-center gap-3">
-              <span className="h-px w-10 bg-gold" />
+              <span className="h-px w-8 bg-gold" />
               <span className="eyebrow">{eyebrow}</span>
             </div>
-            <h2 className="display-text mt-5 text-4xl md:text-5xl lg:text-6xl">
+            <span className="hidden h-3 w-px bg-ivory/15 md:block" />
+            <h2 className="hidden font-serif text-xl font-light italic text-ivory md:block lg:text-2xl">
               {renderTitle()}
             </h2>
-            {subtitle && (
-              <p className="mt-4 max-w-md font-sans text-ivory/55">{subtitle}</p>
-            )}
           </div>
+          {subtitle && (
+            <p className="hidden max-w-xs text-right font-sans text-[11px] uppercase tracking-widest text-ivory/40 lg:block">
+              {subtitle.split('.')[0]}
+            </p>
+          )}
         </div>
 
         {/* Asymmetric layout */}
@@ -131,7 +137,7 @@ export default function StructuredShowcase({
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-7"
           >
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[32px] border border-ivory/10 bg-charcoal shadow-[0_40px_140px_-40px_rgba(0,0,0,0.8)] ring-1 ring-inset ring-ivory/[0.04]">
+            <div className="relative aspect-[4/5] max-h-[78vh] w-full overflow-hidden rounded-[32px] border border-ivory/15 bg-charcoal shadow-[0_40px_140px_-40px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.06)] ring-1 ring-inset ring-ivory/[0.04]">
               <AnimatePresence mode="wait">
                 <motion.img
                   key={hero.id}
@@ -240,11 +246,12 @@ export default function StructuredShowcase({
               </a>
             </div>
 
-            <div className="grid flex-1 grid-cols-2 gap-3">
+            <div className="grid flex-1 grid-cols-2 gap-3 lg:max-h-[calc(78vh-3rem)]">
               {others.map((piece) => (
                 <PieceCard
                   key={piece.id}
                   piece={piece}
+                  accent={accent}
                   onClick={() => {
                     const idx = pieces.findIndex((p) => p.id === piece.id);
                     if (idx !== -1) setLightbox(idx);
@@ -356,14 +363,28 @@ export default function StructuredShowcase({
 
 const PieceCard = forwardRef<
   HTMLDivElement,
-  { piece: ShowcasePiece; onClick: () => void; onPromote: () => void }
->(function PieceCard({ piece, onClick, onPromote }, ref) {
+  {
+    piece: ShowcasePiece;
+    onClick: () => void;
+    onPromote: () => void;
+    accent?: 'gold' | 'neon';
+  }
+>(function PieceCard({ piece, onClick, onPromote, accent = 'gold' }, ref) {
+  const accentBar =
+    accent === 'neon'
+      ? 'bg-gradient-to-r from-fuchsia-500 via-cyan-400 to-amber-300'
+      : 'bg-gradient-to-r from-gold via-gold/80 to-gold';
+  const accentGlow =
+    accent === 'neon'
+      ? 'group-hover:shadow-[0_0_40px_-5px_rgba(217,70,239,0.4)]'
+      : 'group-hover:shadow-[0_0_40px_-5px_rgba(212,175,55,0.4)]';
+
   return (
     <motion.div
       ref={ref}
-      whileHover={{ y: -3 }}
+      whileHover={{ y: -4 }}
       transition={{ duration: 0.3 }}
-      className="group relative overflow-hidden rounded-[22px] border border-ivory/[0.08] bg-charcoal shadow-[0_18px_60px_-30px_rgba(0,0,0,0.6)] ring-1 ring-inset ring-ivory/[0.03]"
+      className={`group relative overflow-hidden rounded-[22px] border border-ivory/[0.08] bg-charcoal shadow-[0_18px_60px_-30px_rgba(0,0,0,0.6)] ring-1 ring-inset ring-ivory/[0.04] transition-shadow duration-500 ${accentGlow}`}
     >
       <button
         onClick={onClick}
@@ -377,7 +398,7 @@ const PieceCard = forwardRef<
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         {/* Subtle vignette */}
-        <div className="absolute inset-0 bg-gradient-to-b from-charcoal/60 via-transparent to-charcoal/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-charcoal/55 via-transparent to-charcoal/85" />
 
         {/* Top-left: category label */}
         <div className="absolute left-4 top-3.5">
@@ -391,11 +412,17 @@ const PieceCard = forwardRef<
           <Expand size={11} />
         </div>
 
-        {/* Bottom: title (appears on hover) */}
-        <div className="absolute inset-x-4 bottom-3.5 translate-y-1 transform opacity-90 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-          <div className="font-serif text-sm italic text-ivory md:text-base">
-            {piece.title}
+        {/* Bottom: title + animated accent underline */}
+        <div className="absolute inset-x-4 bottom-3.5">
+          <div className="translate-y-1 transform opacity-90 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+            <div className="font-serif text-sm italic text-ivory md:text-base">
+              {piece.title}
+            </div>
           </div>
+          {/* Accent line — gold for charcoal section, neon-rainbow for wild side */}
+          <div
+            className={`mt-2 h-[2px] w-0 rounded-full transition-all duration-700 group-hover:w-full ${accentBar}`}
+          />
         </div>
       </button>
     </motion.div>
