@@ -1,7 +1,12 @@
 'use client';
 
 import { useState, useEffect, useCallback, forwardRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+} from 'framer-motion';
 import {
   ArrowUpRight,
   ChevronLeft,
@@ -42,7 +47,7 @@ interface Props {
   /** Hover accent line under cards: 'gold' (charcoal section) | 'neon' (wild side) */
   accent?: 'gold' | 'neon';
   /** Right-side grid columns. Defaults to auto based on piece count. */
-  gridCols?: 2 | 3;
+  gridCols?: 2 | 3 | 4;
 }
 
 export default function StructuredShowcase({
@@ -56,8 +61,10 @@ export default function StructuredShowcase({
   gridCols,
 }: Props) {
   // Auto-pick a grid density that minimises empty cells
-  const cols: 2 | 3 = gridCols ?? (pieces.length - 1 >= 7 ? 3 : 2);
-  const gridColsClass = cols === 3 ? 'grid-cols-3' : 'grid-cols-2';
+  const others_count = pieces.length - 1;
+  const cols: 2 | 3 | 4 = gridCols ?? (others_count >= 12 ? 4 : others_count >= 7 ? 3 : 2);
+  const gridColsClass =
+    cols === 4 ? 'grid-cols-4' : cols === 3 ? 'grid-cols-3' : 'grid-cols-2';
   const [heroIndex, setHeroIndex] = useState(0);
   const [lightbox, setLightbox] = useState<number | null>(null);
 
@@ -385,6 +392,20 @@ const PieceCard = forwardRef<
       ? 'group-hover:shadow-[0_0_40px_-5px_rgba(217,70,239,0.4)]'
       : 'group-hover:shadow-[0_0_40px_-5px_rgba(212,175,55,0.4)]';
 
+  // Cursor-tracking motion values (used only when accent === 'neon')
+  const mx = useMotionValue(-200);
+  const my = useMotionValue(-200);
+  const sx = useSpring(mx, { stiffness: 220, damping: 24, mass: 0.6 });
+  const sy = useSpring(my, { stiffness: 220, damping: 24, mass: 0.6 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (accent !== 'neon') return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    mx.set(e.clientX - rect.left);
+    my.set(e.clientY - rect.top);
+  };
+
   return (
     <motion.div
       ref={ref}
@@ -395,6 +416,9 @@ const PieceCard = forwardRef<
       <button
         onClick={onClick}
         onDoubleClick={onPromote}
+        onMouseMove={handleMove}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         className="relative block aspect-[4/5] w-full text-left"
         title="Click to view · double-click to promote to hero"
       >
@@ -406,20 +430,48 @@ const PieceCard = forwardRef<
         {/* Subtle vignette */}
         <div className="absolute inset-0 bg-gradient-to-b from-charcoal/55 via-transparent to-charcoal/85" />
 
+        {/* Cursor-following ARTSBYCREEDA neon signature (wild side only) */}
+        {accent === 'neon' && (
+          <motion.div
+            style={{ x: sx, y: sy }}
+            animate={{
+              opacity: isHovered ? 1 : 0,
+              scale: isHovered ? 1 : 0.8,
+            }}
+            transition={{ opacity: { duration: 0.25 }, scale: { duration: 0.3 } }}
+            className="pointer-events-none absolute left-0 top-0 z-30 -translate-x-1/2 -translate-y-1/2"
+          >
+            <span
+              className="block font-sans text-[9px] font-bold uppercase tracking-[0.45em] text-white whitespace-nowrap"
+              style={{
+                textShadow: [
+                  '0 0 4px #ffffff',
+                  '0 0 10px #f0abfc',
+                  '0 0 18px #d946ef',
+                  '0 0 28px #06b6d4',
+                  '0 0 40px #06b6d4',
+                ].join(', '),
+              }}
+            >
+              ArtsByCreeda
+            </span>
+          </motion.div>
+        )}
+
         {/* Top-left: category label */}
-        <div className="absolute left-4 top-3.5">
+        <div className="absolute left-4 top-3.5 z-10">
           <span className="font-sans text-[12px] tracking-[0.02em] text-ivory">
             {piece.category}
           </span>
         </div>
 
         {/* Top-right: zoom hint (shows on hover) */}
-        <div className="absolute right-3 top-3 grid h-7 w-7 place-items-center rounded-full border border-ivory/15 bg-charcoal/60 text-ivory/80 opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
+        <div className="absolute right-3 top-3 z-10 grid h-7 w-7 place-items-center rounded-full border border-ivory/15 bg-charcoal/60 text-ivory/80 opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
           <Expand size={11} />
         </div>
 
         {/* Bottom: title + animated accent underline */}
-        <div className="absolute inset-x-4 bottom-3.5">
+        <div className="absolute inset-x-4 bottom-3.5 z-10">
           <div className="translate-y-1 transform opacity-90 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
             <div className="font-serif text-sm italic text-ivory md:text-base">
               {piece.title}
