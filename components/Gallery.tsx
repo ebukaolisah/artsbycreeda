@@ -17,11 +17,12 @@ export default function Gallery() {
   return (
     <StructuredShowcase
       id="gallery"
-      eyebrow="Selected Work · The Studio Six"
+      eyebrow="Selected Work · The Studio Ten"
       title="The **Portfolio**."
-      subtitle="Six pieces. One voice for each chapter of the studio. Click any to open the full study, or use the carousel to spotlight a different hero."
+      subtitle="Ten icons. One pencil. Click any piece to open the full study, or use the carousel to spotlight a different hero."
       pieces={PIECES}
       latestLabel="Latest Work"
+      accent="gold"
     />
   );
 }

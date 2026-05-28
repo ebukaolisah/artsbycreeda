@@ -35,12 +35,14 @@ interface Props {
   title: string;
   /** A 1-2 line copy under the title */
   subtitle?: string;
-  /** The 6 pieces — index 0 is the initial hero */
+  /** Pieces — index 0 is the initial hero */
   pieces: ShowcasePiece[];
   /** Used in the right-column header (defaults to "Latest Work") */
   latestLabel?: string;
   /** Hover accent line under cards: 'gold' (charcoal section) | 'neon' (wild side) */
   accent?: 'gold' | 'neon';
+  /** Right-side grid columns. Defaults to auto based on piece count. */
+  gridCols?: 2 | 3;
 }
 
 export default function StructuredShowcase({
@@ -51,7 +53,11 @@ export default function StructuredShowcase({
   pieces,
   latestLabel = 'Latest Work',
   accent = 'gold',
+  gridCols,
 }: Props) {
+  // Auto-pick a grid density that minimises empty cells
+  const cols: 2 | 3 = gridCols ?? (pieces.length - 1 >= 7 ? 3 : 2);
+  const gridColsClass = cols === 3 ? 'grid-cols-3' : 'grid-cols-2';
   const [heroIndex, setHeroIndex] = useState(0);
   const [lightbox, setLightbox] = useState<number | null>(null);
 
@@ -246,7 +252,7 @@ export default function StructuredShowcase({
               </a>
             </div>
 
-            <div className="grid flex-1 grid-cols-2 gap-3 lg:max-h-[calc(78vh-3rem)]">
+            <div className={`grid flex-1 ${gridColsClass} gap-2.5 lg:gap-3 lg:max-h-[calc(78vh-3rem)]`}>
               {others.map((piece) => (
                 <PieceCard
                   key={piece.id}

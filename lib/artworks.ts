@@ -1,86 +1,133 @@
 export type ArtworkCategory =
-  | 'Portraits'
-  | 'Couples'
-  | 'Religious'
-  | 'Cultural'
-  | 'Tributes';
+  | 'Spotlight'
+  | 'Crowned'
+  | 'Anthem'
+  | 'Legacy'
+  | 'Mogul'
+  | 'Starboy';
 
 export interface Artwork {
   id: string;
+  /** Grand, short, evocative — never literal */
   title: string;
   src: string;
+  /** Short single-word style tag shown at top-left of card */
   category: ArtworkCategory;
   year: number;
   medium: string;
-  description?: string;
+  /** One-line grand writeup shown in lightbox */
+  description: string;
   featured?: boolean;
 }
 
 /**
- * Curated 6-piece collection. One iconic piece per voice in the studio:
- * regal portraiture, sacred scene, celebrity tribute, Igbo heritage, intimate couples, light study.
+ * Ten pieces — the studio's headline collection.
+ * Captures the African Giant era from Asake to Wizkid plus the legacy & mogul portraits.
  */
 export const ARTWORKS: Artwork[] = [
   {
-    id: 'the-sovereign',
-    title: 'The Sovereign',
-    src: '/artworks/regal-01.png',
-    category: 'Portraits',
+    id: 'starboy',
+    title: 'Starboy',
+    src: '/artworks/wizkid.png',
+    category: 'Starboy',
     year: 2025,
     medium: 'Digital Charcoal',
-    description: 'A study in poise — every stroke a quiet declaration of presence.',
+    description:
+      'From Surulere to Madison Square — Made in Lagos, drawn in light.',
     featured: true,
   },
   {
-    id: 'heir-of-light',
-    title: 'Heir of Light',
-    src: '/artworks/regal-03.png',
-    category: 'Portraits',
+    id: 'african-giant',
+    title: 'The African Giant',
+    src: '/artworks/burna-01.png',
+    category: 'Crowned',
     year: 2025,
     medium: 'Digital Charcoal',
-    description: 'Light, lineage, and lineage of light — captured in graphite.',
+    description:
+      'Self-coronated, world-corroborated. The genre flexes around him.',
     featured: true,
   },
   {
-    id: 'last-supper',
-    title: 'The Last Supper, Reimagined',
-    src: '/artworks/religious-last-supper.png',
-    category: 'Religious',
+    id: 'obo',
+    title: 'OBO',
+    src: '/artworks/davido-01.png',
+    category: 'Anthem',
     year: 2025,
     medium: 'Digital Charcoal',
-    description: 'A devotional scene rendered in graphite — sacred geometry, modern soul.',
+    description:
+      'Omo Baba Olowo. The fire, the family, and the anthem — set in graphite.',
     featured: true,
   },
   {
-    id: 'tribute-burna',
-    title: 'Outside — Burna Boy Tribute',
-    src: '/artworks/artistry-01.png',
-    category: 'Tributes',
+    id: 'phenom',
+    title: 'The Phenom',
+    src: '/artworks/asake.png',
+    category: 'Spotlight',
     year: 2025,
     medium: 'Digital Charcoal',
-    description: 'A tribute to the African Giant — the swagger captured in pencil.',
-    featured: true,
+    description:
+      'Lagos summer in a single frame. The genre rearranged itself around him.',
   },
   {
-    id: 'igbo-adaeze',
-    title: 'Igbo Heritage — Adaeze',
-    src: '/artworks/pencil-03.png',
-    category: 'Cultural',
+    id: 'last-last',
+    title: 'Last Last',
+    src: '/artworks/burna-02.png',
+    category: 'Anthem',
     year: 2025,
     medium: 'Digital Charcoal',
-    description: 'Tradition rendered with the precision of memory.',
-    featured: true,
+    description:
+      'Heartbreak rendered as a hymn. Every stroke knows what it cost.',
   },
   {
-    id: 'anniversary',
-    title: 'Anniversary',
-    src: '/artworks/pencil-01.png',
-    category: 'Couples',
+    id: 'twice-as-tall',
+    title: 'Twice as Tall',
+    src: '/artworks/burna-03.png',
+    category: 'Crowned',
     year: 2025,
     medium: 'Digital Charcoal',
-    description: 'Love preserved in pencil — perfect for gifting.',
-    featured: true,
+    description:
+      'Grammy-shaped silhouette. The continent fits inside the frame.',
+  },
+  {
+    id: 'thirty-bg',
+    title: '30 Billion Gang',
+    src: '/artworks/davido-02.png',
+    category: 'Anthem',
+    year: 2025,
+    medium: 'Digital Charcoal',
+    description:
+      'Anthems for a generation that refuses to bow. Pencil with the bass turned up.',
+  },
+  {
+    id: 'patriarch',
+    title: 'The Patriarch',
+    src: '/artworks/chief-patrick.png',
+    category: 'Legacy',
+    year: 2025,
+    medium: 'Digital Charcoal',
+    description:
+      'Wisdom you can feel through the pencil — every line carries a decade.',
+  },
+  {
+    id: 'madam-mogul',
+    title: 'Madam Mogul',
+    src: '/artworks/faith-ojo.png',
+    category: 'Mogul',
+    year: 2025,
+    medium: 'Digital Charcoal',
+    description:
+      'Producer. Patron. Pillar. Three lifetimes in one composed gaze.',
+  },
+  {
+    id: 'kingmaker',
+    title: 'The Kingmaker',
+    src: '/artworks/tunde-ednut.png',
+    category: 'Mogul',
+    year: 2025,
+    medium: 'Digital Charcoal',
+    description:
+      'Behind every breakout star — a man with the microphone and the instinct.',
   },
 ];
 
-export const FEATURED = ARTWORKS;
+export const FEATURED = ARTWORKS.filter((a) => a.featured);
