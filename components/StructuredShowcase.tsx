@@ -47,7 +47,7 @@ interface Props {
   /** Hover accent line under cards: 'gold' (charcoal section) | 'neon' (wild side) */
   accent?: 'gold' | 'neon';
   /** Right-side grid columns. Defaults to auto based on piece count. */
-  gridCols?: 2 | 3 | 4;
+  gridCols?: 2 | 3 | 4 | 5;
 }
 
 export default function StructuredShowcase({
@@ -62,9 +62,16 @@ export default function StructuredShowcase({
 }: Props) {
   // Auto-pick a grid density that minimises empty cells
   const others_count = pieces.length - 1;
-  const cols: 2 | 3 | 4 = gridCols ?? (others_count >= 12 ? 4 : others_count >= 7 ? 3 : 2);
+  const cols: 2 | 3 | 4 | 5 =
+    gridCols ?? (others_count >= 12 ? 5 : others_count >= 7 ? 4 : 2);
   const gridColsClass =
-    cols === 4 ? 'grid-cols-4' : cols === 3 ? 'grid-cols-3' : 'grid-cols-2';
+    cols === 5
+      ? 'grid-cols-5'
+      : cols === 4
+        ? 'grid-cols-4'
+        : cols === 3
+          ? 'grid-cols-3'
+          : 'grid-cols-2';
   const [heroIndex, setHeroIndex] = useState(0);
   const [lightbox, setLightbox] = useState<number | null>(null);
 
@@ -142,15 +149,15 @@ export default function StructuredShowcase({
 
         {/* Asymmetric layout */}
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-12 lg:gap-6">
-          {/* LEFT — big hero (carousel) */}
+          {/* LEFT — big hero (carousel) — narrower column so aspect-[4/5] reads truly portrait */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-7"
+            className="lg:col-span-5"
           >
-            <div className="relative aspect-[4/5] max-h-[55vh] sm:max-h-[58vh] md:max-h-[60vh] lg:max-h-[62vh] w-full overflow-hidden rounded-[28px] md:rounded-[32px] border border-ivory/15 bg-charcoal shadow-[0_40px_140px_-40px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.06)] ring-1 ring-inset ring-ivory/[0.04]">
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[28px] md:rounded-[32px] border border-ivory/15 bg-charcoal shadow-[0_40px_140px_-40px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.06)] ring-1 ring-inset ring-ivory/[0.04]">
               <AnimatePresence mode="wait">
                 <motion.img
                   key={hero.id}
@@ -232,13 +239,13 @@ export default function StructuredShowcase({
             </div>
           </motion.div>
 
-          {/* RIGHT — Latest Work grid */}
+          {/* RIGHT — Latest Work grid — wider column to host more cards comfortably */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col lg:col-span-5"
+            className="flex flex-col lg:col-span-7"
           >
             {/* Latest Work header bar — its own little panel */}
             <div className="mb-3 flex items-center justify-between rounded-[20px] border border-ivory/[0.08] bg-ivory/[0.02] px-5 py-3 backdrop-blur-sm">
@@ -260,7 +267,7 @@ export default function StructuredShowcase({
               </a>
             </div>
 
-            <div className={`grid flex-1 ${gridColsClass} gap-2.5 lg:gap-3 lg:max-h-[calc(62vh-3rem)]`}>
+            <div className={`grid flex-1 ${gridColsClass} gap-2.5 lg:gap-3`}>
               {others.map((piece) => (
                 <PieceCard
                   key={piece.id}

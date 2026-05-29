@@ -145,7 +145,7 @@ export default function WildSide() {
       pieces={PIECES}
       latestLabel="The Wild Collection"
       accent="neon"
-      gridCols={4}
+      gridCols={5}
     />
   );
 }
