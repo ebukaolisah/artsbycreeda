@@ -101,14 +101,15 @@ export const PICKUP_HQ = {
   islandBranchSoon: true,
 };
 
-/** Total price for the customer, in NGN */
+/** Total price for the customer, in NGN. Returns 0 when input isn't fully chosen yet. */
 export interface PriceInput {
-  style: Style;
+  style: Style | null;
   format?: Format | null;
   sizeId?: SizeId | null;
   damageLevel?: DamageLevel | null;
 }
 export function priceOf(input: PriceInput): number {
+  if (!input.style) return 0;
   if (input.style === 'restoration') {
     const level = input.damageLevel ?? 'light';
     return RESTORATION_LEVELS[level].price;
