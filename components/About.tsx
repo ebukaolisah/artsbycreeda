@@ -48,7 +48,7 @@ export default function About() {
             className="group relative mt-12 aspect-[4/5] w-full overflow-hidden rounded-[28px] border border-ivory/10 shadow-[0_30px_100px_-30px_rgba(0,0,0,0.7)] ring-1 ring-inset ring-ivory/[0.04]"
           >
             <img
-              src="/creeda-portrait.jpg"
+              src="/creeda-portrait.png"
               alt="Creeda — the artist behind ArtsByCreeda"
               onError={(e) => {
                 // Soft fallback until the photo is dropped into /public
