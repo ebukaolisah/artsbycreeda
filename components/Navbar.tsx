@@ -93,7 +93,7 @@ export default function Navbar() {
               </button>
 
               <a
-                href={BRAND.commissionPath}
+                href={BRAND.orderPath}
                 className="group hidden items-center gap-1.5 rounded-full bg-gold px-4 py-2 font-sans text-[11px] font-medium uppercase tracking-widest text-charcoal transition-all duration-300 hover:bg-teal md:inline-flex"
               >
                 <span>Order</span>
@@ -151,7 +151,7 @@ export default function Navbar() {
                 </motion.a>
               ))}
               <motion.a
-                href={BRAND.commissionPath}
+                href={BRAND.orderPath}
                 onClick={() => setOpen(false)}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

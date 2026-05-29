@@ -260,7 +260,7 @@ export default function StructuredShowcase({
                 </motion.span>
               </span>
               <a
-                href={BRAND.commissionPath}
+                href={BRAND.orderPath}
                 className="font-sans text-[11px] uppercase tracking-[0.18em] text-ivory/70 underline underline-offset-[6px] decoration-ivory/30 transition-colors hover:text-gold hover:decoration-gold"
               >
                 View All
@@ -368,7 +368,7 @@ export default function StructuredShowcase({
                     {active.description}
                   </p>
                 )}
-                <a href={BRAND.commissionPath} className="btn-primary mt-8 self-start">
+                <a href={BRAND.orderPath} className="btn-primary mt-8 self-start">
                   Order a Similar Piece
                 </a>
               </div>

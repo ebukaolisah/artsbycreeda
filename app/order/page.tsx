@@ -210,7 +210,7 @@ export default function CommissionPage() {
       fd.append('amount', String(total));
       fd.append('refPhoto', data.refFile);
 
-      const res = await fetch('/api/commission/initiate', { method: 'POST', body: fd });
+      const res = await fetch('/api/order/initiate', { method: 'POST', body: fd });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Something went wrong');
       localStorage.removeItem('commission_state');

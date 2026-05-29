@@ -7,7 +7,7 @@ import { BRAND } from '@/lib/constants';
 export default function CTA() {
   return (
     <section
-      id="commission"
+      id="order"
       className="relative overflow-hidden bg-gradient-to-b from-charcoal via-[#100d0a] to-charcoal py-32"
     >
       {/* Background hero portrait, faded */}
@@ -54,7 +54,7 @@ export default function CTA() {
             className="mt-12 flex flex-wrap items-center justify-center gap-6"
           >
             <a
-              href={BRAND.commissionPath}
+              href={BRAND.orderPath}
               className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full bg-gold px-10 py-5 font-sans text-sm font-medium uppercase tracking-widest text-charcoal shadow-[0_0_60px_-10px_rgba(212,175,55,0.5)] transition-all duration-500 hover:bg-teal hover:shadow-[0_0_80px_-10px_rgba(68,225,216,0.6)]"
             >
               <span className="relative">Order Yours</span>

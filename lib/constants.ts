@@ -4,7 +4,7 @@ export const BRAND = {
   tagline: 'Where art meets soul',
   description:
     'Hyper-realistic, museum-quality charcoal portraits delivered as 600 DPI digital files in 24–48 hours.',
-  commissionPath: '/commission',
+  orderPath: '/order',
   email: 'hello@artsbycreeda.com',
   socials: {
     instagram: 'https://instagram.com/artsbycreeda',

@@ -76,7 +76,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href={BRAND.commissionPath}
+                  href={BRAND.orderPath}
                   className="text-ivory/70 transition-colors hover:text-gold"
                 >
                   Start an order

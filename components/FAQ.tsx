@@ -48,7 +48,7 @@ export default function FAQ() {
             </h2>
             <p className="mt-6 max-w-sm font-sans text-ivory/60">
               The fine print, simplified. Anything missing?{' '}
-              <a href="#commission" className="text-gold underline-offset-4 hover:underline">
+              <a href="#order" className="text-gold underline-offset-4 hover:underline">
                 Reach out
               </a>{' '}
               and we&rsquo;ll answer personally.

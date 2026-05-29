@@ -126,7 +126,7 @@ export default function About() {
           </div>
 
           <div className="mt-12">
-            <a href={BRAND.commissionPath} className="btn-primary">
+            <a href={BRAND.orderPath} className="btn-primary">
               Order Yours
             </a>
           </div>

@@ -79,7 +79,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.7 }}
             className="mt-10 flex flex-wrap items-center gap-4"
           >
-            <a href={BRAND.commissionPath} className="btn-primary group">
+            <a href={BRAND.orderPath} className="btn-primary group">
               <span>Order Yours</span>
               <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
             </a>
