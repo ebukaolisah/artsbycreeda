@@ -369,7 +369,7 @@ export default function StructuredShowcase({
                   </p>
                 )}
                 <a href={BRAND.commissionPath} className="btn-primary mt-8 self-start">
-                  Commission a Similar Piece
+                  Order a Similar Piece
                 </a>
               </div>
             </motion.div>

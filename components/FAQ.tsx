@@ -27,7 +27,7 @@ const FAQS = [
   },
   {
     q: 'Will my image be used elsewhere?',
-    a: 'Never. Your photo is used solely for the commission and is deleted after delivery. Your portrait is yours — full personal use rights included.',
+    a: 'Never. Your photo is used solely for your order and is deleted after delivery. Your portrait is yours — full personal use rights included.',
   },
 ];
 

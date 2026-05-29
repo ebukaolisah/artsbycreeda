@@ -57,7 +57,7 @@ export default function CTA() {
               href={BRAND.commissionPath}
               className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full bg-gold px-10 py-5 font-sans text-sm font-medium uppercase tracking-widest text-charcoal shadow-[0_0_60px_-10px_rgba(212,175,55,0.5)] transition-all duration-500 hover:bg-teal hover:shadow-[0_0_80px_-10px_rgba(68,225,216,0.6)]"
             >
-              <span className="relative">Start Your Commission</span>
+              <span className="relative">Order Yours</span>
               <ArrowUpRight
                 size={18}
                 className="relative transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1"

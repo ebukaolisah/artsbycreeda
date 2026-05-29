@@ -57,7 +57,7 @@ export default function Navbar() {
               ))}
             </nav>
 
-            {/* Right cluster: theme toggle + Commission */}
+            {/* Right cluster: theme toggle + Order CTA */}
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
@@ -96,7 +96,7 @@ export default function Navbar() {
                 href={BRAND.commissionPath}
                 className="group hidden items-center gap-1.5 rounded-full bg-gold px-4 py-2 font-sans text-[11px] font-medium uppercase tracking-widest text-charcoal transition-all duration-300 hover:bg-teal md:inline-flex"
               >
-                <span>Commission</span>
+                <span>Order</span>
                 <ArrowUpRight
                   size={13}
                   className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
@@ -158,7 +158,7 @@ export default function Navbar() {
                 transition={{ delay: 0.4 }}
                 className="btn-primary mt-8 self-start"
               >
-                Commission Yours
+                Order Yours
               </motion.a>
             </div>
           </motion.div>

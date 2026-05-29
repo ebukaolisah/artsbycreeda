@@ -127,7 +127,7 @@ export default function About() {
 
           <div className="mt-12">
             <a href={BRAND.commissionPath} className="btn-primary">
-              Begin Your Commission
+              Order Yours
             </a>
           </div>
         </motion.div>

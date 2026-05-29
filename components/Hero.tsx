@@ -80,7 +80,7 @@ export default function Hero() {
             className="mt-10 flex flex-wrap items-center gap-4"
           >
             <a href={BRAND.commissionPath} className="btn-primary group">
-              <span>Commission Yours</span>
+              <span>Order Yours</span>
               <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
             </a>
             <a href="#gallery" className="btn-outline">

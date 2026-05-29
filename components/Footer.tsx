@@ -79,7 +79,7 @@ export default function Footer() {
                   href={BRAND.commissionPath}
                   className="text-ivory/70 transition-colors hover:text-gold"
                 >
-                  Start a commission
+                  Start an order
                 </a>
               </li>
             </ul>

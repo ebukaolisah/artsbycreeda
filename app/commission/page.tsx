@@ -232,7 +232,7 @@ export default function CommissionPage() {
         <div className="mx-auto max-w-3xl text-center">
           <div className="inline-flex items-center gap-3">
             <span className="h-px w-10 bg-gold" />
-            <span className="eyebrow">Commission · Direct from the Studio</span>
+            <span className="eyebrow">Order · Direct from the Studio</span>
             <span className="h-px w-10 bg-gold" />
           </div>
           <h1 className="display-text mt-6 text-5xl md:text-6xl lg:text-7xl">
