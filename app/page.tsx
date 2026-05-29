@@ -3,6 +3,7 @@ import Hero from '@/components/Hero';
 import Gallery from '@/components/Gallery';
 import WildSide from '@/components/WildSide';
 import About from '@/components/About';
+import Craft from '@/components/Craft';
 import Process from '@/components/Process';
 import Testimonials from '@/components/Testimonials';
 import FAQ from '@/components/FAQ';
@@ -17,6 +18,7 @@ export default function HomePage() {
       <Gallery />
       <WildSide />
       <About />
+      <Craft />
       <Process />
       <Testimonials />
       <FAQ />

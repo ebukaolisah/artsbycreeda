@@ -11,9 +11,14 @@ export type OrderStatus =
 export interface Order {
   id: number;
   ref: string;
-  style: 'charcoal' | 'urban';
-  size_id: string;
-  size_label: string;
+  /** charcoal | urban | restoration */
+  style: 'charcoal' | 'urban' | 'restoration';
+  /** soft | framed — only set for portraits */
+  format: 'soft' | 'framed' | null;
+  /** light | heavy — only set for restoration */
+  damage_level: 'light' | 'heavy' | null;
+  size_id: string | null;
+  size_label: string | null;
   amount_ngn: number;
   name: string;
   email: string;
@@ -62,18 +67,25 @@ export async function ensureSchema() {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `;
-  // Migrations for accounts that still have ref_photo_url column from earlier shape
+  // Migrations for older schemas
   await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS telegram_file_id TEXT`;
   await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS telegram_message_id INTEGER`;
+  await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS format TEXT`;
+  await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS damage_level TEXT`;
+  // Allow size_id / size_label NULL for restoration orders
+  await sql`ALTER TABLE orders ALTER COLUMN size_id DROP NOT NULL`;
+  await sql`ALTER TABLE orders ALTER COLUMN size_label DROP NOT NULL`;
   await sql`CREATE INDEX IF NOT EXISTS orders_status_idx ON orders(status)`;
   await sql`CREATE INDEX IF NOT EXISTS orders_paystack_ref_idx ON orders(paystack_reference)`;
 }
 
 type CreateOrderInput = {
   ref: string;
-  style: 'charcoal' | 'urban';
-  size_id: string;
-  size_label: string;
+  style: 'charcoal' | 'urban' | 'restoration';
+  format: 'soft' | 'framed' | null;
+  damage_level: 'light' | 'heavy' | null;
+  size_id: string | null;
+  size_label: string | null;
   amount_ngn: number;
   name: string;
   email: string;
@@ -86,11 +98,12 @@ type CreateOrderInput = {
 export async function createOrder(input: CreateOrderInput) {
   const { rows } = await sql<Order>`
     INSERT INTO orders (
-      ref, style, size_id, size_label, amount_ngn,
+      ref, style, format, damage_level, size_id, size_label, amount_ngn,
       name, email, phone, notes,
       telegram_file_id, telegram_message_id
     ) VALUES (
-      ${input.ref}, ${input.style}, ${input.size_id}, ${input.size_label}, ${input.amount_ngn},
+      ${input.ref}, ${input.style}, ${input.format}, ${input.damage_level},
+      ${input.size_id}, ${input.size_label}, ${input.amount_ngn},
       ${input.name}, ${input.email}, ${input.phone}, ${input.notes},
       ${input.telegram_file_id}, ${input.telegram_message_id}
     )

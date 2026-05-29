@@ -101,43 +101,66 @@ function escapeHtml(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+/** One-line summary of WHAT was ordered (style + format/size or damage) */
+function orderSummaryLine(o: {
+  style: string;
+  format: string | null;
+  damage_level: string | null;
+  size_label: string | null;
+}) {
+  if (o.style === 'restoration') {
+    const lvl = o.damage_level === 'heavy' ? 'Hardly visible' : 'Still visible';
+    return `🪄 Photo Restoration · ${lvl}`;
+  }
+  const styleLabel = o.style === 'charcoal' ? '🖋 Charcoal' : '🎨 Urban';
+  const fmt = o.format === 'framed' ? 'Framed Print' : 'Soft Copy';
+  return `${styleLabel} · ${fmt}${o.size_label ? ` · ${o.size_label}` : ''}`;
+}
+
 export function pendingCaption(order: {
   ref: string;
   style: string;
-  size_label: string;
+  format: string | null;
+  damage_level: string | null;
+  size_label: string | null;
   amount_ngn: number;
   name: string;
   email: string;
   phone: string;
   notes: string | null;
 }) {
-  const styleLabel = order.style === 'charcoal' ? 'Charcoal' : 'Urban Art';
   return [
     `🟡 <b>PENDING ORDER</b> — awaiting payment`,
     ``,
     `<b>Ref:</b> <code>${order.ref}</code>`,
-    `<b>Style:</b> ${styleLabel} · ${order.size_label}`,
+    orderSummaryLine(order),
     `<b>Amount:</b> ${formatNGN(order.amount_ngn)}`,
     ``,
     `<b>Customer:</b> ${escapeHtml(order.name)}`,
     `📧 ${escapeHtml(order.email)}`,
-    `📱 ${escapeHtml(order.phone)}`,
+    order.phone ? `📱 ${escapeHtml(order.phone)}` : '',
     order.notes ? `📝 ${escapeHtml(order.notes)}` : '',
   ].filter(Boolean).join('\n');
 }
 
 export function paidCaption(order: Order, dashboardUrl: string) {
-  const styleLabel = order.style === 'charcoal' ? 'Charcoal' : 'Urban Art';
+  const fulfillment =
+    order.style === 'restoration'
+      ? '📧 Soft copy by email · 24–48 hr'
+      : order.format === 'framed'
+        ? '📍 Print + frame · ready for pickup at Ojo Alaba'
+        : '📧 Soft copy by email · 24–48 hr';
   return [
     `✅ <b>PAID ORDER</b> — start the studio clock`,
     ``,
     `<b>Ref:</b> <code>${order.ref}</code>`,
-    `<b>Style:</b> ${styleLabel} · ${order.size_label}`,
+    orderSummaryLine(order),
     `<b>Paid:</b> ${formatNGN(order.amount_ngn)}`,
+    fulfillment,
     ``,
     `<b>Customer:</b> ${escapeHtml(order.name)}`,
     `📧 ${escapeHtml(order.email)}`,
-    `📱 ${escapeHtml(order.phone)}`,
+    order.phone ? `📱 ${escapeHtml(order.phone)}` : '',
     order.notes ? `📝 ${escapeHtml(order.notes)}` : '',
     ``,
     `🛠 <a href="${dashboardUrl}">Open in dashboard</a>`,

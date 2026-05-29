@@ -1,40 +1,40 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Check, Upload, X, Sparkles, Loader2, ShieldCheck } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  Upload,
+  X,
+  Sparkles,
+  Loader2,
+  ShieldCheck,
+  Mail,
+  Frame,
+  Wand2,
+  MapPin,
+} from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { SIZES, STYLES, type Style, type SizeId, priceOf, formatNGN } from '@/lib/pricing';
+import {
+  SIZES,
+  STYLES,
+  FORMATS,
+  RESTORATION_LEVELS,
+  PICKUP_HQ,
+  priceOf,
+  formatNGN,
+  type Style,
+  type SizeId,
+  type Format,
+  type DamageLevel,
+} from '@/lib/pricing';
 import { BRAND } from '@/lib/constants';
 
-type Step = 0 | 1 | 2 | 3 | 4;
+/* ----------------- Country codes ----------------- */
 
-interface FormData {
-  style: Style | null;
-  sizeId: SizeId | null;
-  name: string;
-  email: string;
-  countryCode: string;
-  phoneNumber: string;
-  notes: string;
-  refFile: File | null;
-  refPreview: string | null;
-}
-
-const EMPTY: FormData = {
-  style: null,
-  sizeId: null,
-  name: '',
-  email: '',
-  countryCode: '+234',
-  phoneNumber: '',
-  notes: '',
-  refFile: null,
-  refPreview: null,
-};
-
-/** Country dial codes, Nigeria first, then most-common worldwide */
 const COUNTRY_CODES: Array<{ code: string; flag: string; name: string }> = [
   { code: '+234', flag: '🇳🇬', name: 'Nigeria' },
   { code: '+1',   flag: '🇺🇸', name: 'United States' },
@@ -59,49 +59,119 @@ const COUNTRY_CODES: Array<{ code: string; flag: string; name: string }> = [
   { code: '+52',  flag: '🇲🇽', name: 'Mexico' },
 ];
 
-const STEP_LABELS = ['Style', 'Size', 'Details', 'Reference', 'Pay'];
+/* ----------------- Form state ----------------- */
+
+interface FormData {
+  style: Style | null;
+  format: Format | null;          // portrait only
+  sizeId: SizeId | null;          // portrait only
+  damageLevel: DamageLevel | null; // restoration only
+  name: string;
+  email: string;
+  countryCode: string;
+  phoneNumber: string;
+  notes: string;
+  refFile: File | null;
+  refPreview: string | null;
+}
+
+const EMPTY: FormData = {
+  style: null,
+  format: null,
+  sizeId: null,
+  damageLevel: null,
+  name: '',
+  email: '',
+  countryCode: '+234',
+  phoneNumber: '',
+  notes: '',
+  refFile: null,
+  refPreview: null,
+};
+
+type StepKey =
+  | 'service'
+  | 'format'
+  | 'size'
+  | 'damage'
+  | 'details'
+  | 'reference'
+  | 'pay';
+
+interface StepDef {
+  key: StepKey;
+  label: string;
+}
+
+const PORTRAIT_STEPS: StepDef[] = [
+  { key: 'service', label: 'Service' },
+  { key: 'format', label: 'Format' },
+  { key: 'size', label: 'Size' },
+  { key: 'details', label: 'Details' },
+  { key: 'reference', label: 'Reference' },
+  { key: 'pay', label: 'Pay' },
+];
+
+const RESTORATION_STEPS: StepDef[] = [
+  { key: 'service', label: 'Service' },
+  { key: 'damage', label: 'Damage' },
+  { key: 'details', label: 'Details' },
+  { key: 'reference', label: 'Reference' },
+  { key: 'pay', label: 'Pay' },
+];
+
+/* ===================================================================
+ * Page
+ * ================================================================ */
 
 export default function CommissionPage() {
-  const [step, setStep] = useState<Step>(0);
+  const [step, setStep] = useState(0);
   const [data, setData] = useState<FormData>(EMPTY);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Restore from localStorage on mount
+  // Persistence
   useEffect(() => {
     try {
       const cached = localStorage.getItem('commission_state');
       if (cached) {
         const parsed = JSON.parse(cached);
-        // Don't restore files (they don't serialize)
         setData((d) => ({ ...d, ...parsed, refFile: null, refPreview: null }));
       }
     } catch {}
   }, []);
-
-  // Persist on change (excluding the File)
   useEffect(() => {
     const { refFile, refPreview, ...persistable } = data;
     localStorage.setItem('commission_state', JSON.stringify(persistable));
   }, [data]);
 
-  const total = data.style && data.sizeId ? priceOf(data.style, data.sizeId) : 0;
+  const steps: StepDef[] = useMemo(
+    () => (data.style === 'restoration' ? RESTORATION_STEPS : PORTRAIT_STEPS),
+    [data.style]
+  );
+  const current = steps[Math.min(step, steps.length - 1)];
+
+  const total = priceOf(data);
 
   const canContinue = (() => {
-    switch (step) {
-      case 0:
+    switch (current.key) {
+      case 'service':
         return data.style !== null;
-      case 1:
+      case 'format':
+        return data.format !== null;
+      case 'size':
         return data.sizeId !== null;
-      case 2:
-        // Phone is OPTIONAL — only name + valid email required
+      case 'damage':
+        return data.damageLevel !== null;
+      case 'details':
+        // Phone optional; only name + valid email required.
         return (
           data.name.trim().length >= 2 &&
           /^\S+@\S+\.\S+$/.test(data.email)
         );
-      case 3:
+      case 'reference':
         return data.refFile !== null;
-      case 4:
+      case 'pay':
         return true;
       default:
         return false;
@@ -111,24 +181,27 @@ export default function CommissionPage() {
   const next = () => {
     if (!canContinue) return;
     setError(null);
-    setStep((s) => Math.min(4, s + 1) as Step);
+    setStep((s) => Math.min(steps.length - 1, s + 1));
   };
   const back = () => {
     setError(null);
-    setStep((s) => Math.max(0, s - 1) as Step);
+    setStep((s) => Math.max(0, s - 1));
   };
 
   const submit = useCallback(async () => {
-    if (!data.style || !data.sizeId || !data.refFile) return;
+    if (!data.style || !data.refFile) return;
+    if (data.style !== 'restoration' && (!data.format || !data.sizeId)) return;
+    if (data.style === 'restoration' && !data.damageLevel) return;
     setSubmitting(true);
     setError(null);
     try {
       const fd = new FormData();
       fd.append('style', data.style);
-      fd.append('sizeId', data.sizeId);
+      if (data.format) fd.append('format', data.format);
+      if (data.sizeId) fd.append('sizeId', data.sizeId);
+      if (data.damageLevel) fd.append('damageLevel', data.damageLevel);
       fd.append('name', data.name);
       fd.append('email', data.email);
-      // Phone is optional — combine country code + number only if provided
       const fullPhone = data.phoneNumber.trim()
         ? `${data.countryCode} ${data.phoneNumber.trim()}`
         : '';
@@ -140,7 +213,6 @@ export default function CommissionPage() {
       const res = await fetch('/api/commission/initiate', { method: 'POST', body: fd });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Something went wrong');
-      // Redirect to Paystack
       localStorage.removeItem('commission_state');
       window.location.href = json.authorization_url;
     } catch (e: any) {
@@ -152,14 +224,11 @@ export default function CommissionPage() {
   return (
     <main className="relative min-h-screen bg-charcoal">
       <Navbar />
-
-      {/* Soft background glow */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-32 left-1/2 h-96 w-[600px] -translate-x-1/2 rounded-full bg-gold/10 blur-[140px]" />
       </div>
 
       <section className="container-art relative pb-32 pt-36">
-        {/* Header */}
         <div className="mx-auto max-w-3xl text-center">
           <div className="inline-flex items-center gap-3">
             <span className="h-px w-10 bg-gold" />
@@ -172,18 +241,17 @@ export default function CommissionPage() {
             <span className="italic gold-text">begins here</span>.
           </h1>
           <p className="mt-6 mx-auto max-w-lg font-sans text-ivory/65">
-            Five quick steps. Pay securely. Receive your 600&nbsp;DPI masterwork
-            in 24&ndash;48 hours.
+            Pick your service. Pay securely. Receive your piece.
           </p>
         </div>
 
         {/* Progress */}
         <div className="mx-auto mt-14 flex max-w-2xl items-center gap-2">
-          {STEP_LABELS.map((label, i) => {
+          {steps.map((s, i) => {
             const done = i < step;
             const active = i === step;
             return (
-              <div key={label} className="flex flex-1 items-center gap-2">
+              <div key={s.key + i} className="flex flex-1 items-center gap-2">
                 <div className="flex flex-col items-center gap-2">
                   <motion.div
                     animate={{
@@ -201,10 +269,10 @@ export default function CommissionPage() {
                       active ? 'text-gold' : 'text-ivory/40'
                     }`}
                   >
-                    {label}
+                    {s.label}
                   </span>
                 </div>
-                {i < STEP_LABELS.length - 1 && (
+                {i < steps.length - 1 && (
                   <div className="h-px flex-1 bg-ivory/10">
                     <motion.div
                       initial={{ width: '0%' }}
@@ -223,32 +291,54 @@ export default function CommissionPage() {
         <div className="mx-auto mt-16 max-w-3xl">
           <AnimatePresence mode="wait">
             <motion.div
-              key={step}
+              key={current.key}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             >
-              {step === 0 && (
-                <StepStyle
-                  style={data.style}
-                  onPick={(s) => setData({ ...data, style: s })}
+              {current.key === 'service' && (
+                <StepService
+                  selected={data.style}
+                  onPick={(s) => {
+                    // Reset incompatible fields when switching service
+                    setData({
+                      ...data,
+                      style: s,
+                      format: s === 'restoration' ? null : data.format,
+                      sizeId: s === 'restoration' ? null : data.sizeId,
+                      damageLevel: s === 'restoration' ? data.damageLevel : null,
+                    });
+                  }}
                 />
               )}
-              {step === 1 && data.style && (
+              {current.key === 'format' && data.style && data.style !== 'restoration' && (
+                <StepFormat
+                  selected={data.format}
+                  onPick={(f) => setData({ ...data, format: f })}
+                />
+              )}
+              {current.key === 'size' && data.style && data.style !== 'restoration' && data.format && (
                 <StepSize
                   style={data.style}
+                  format={data.format}
                   sizeId={data.sizeId}
                   onPick={(id) => setData({ ...data, sizeId: id })}
                 />
               )}
-              {step === 2 && (
+              {current.key === 'damage' && (
+                <StepDamage
+                  selected={data.damageLevel}
+                  onPick={(d) => setData({ ...data, damageLevel: d })}
+                />
+              )}
+              {current.key === 'details' && (
                 <StepDetails data={data} onChange={setData} />
               )}
-              {step === 3 && (
+              {current.key === 'reference' && (
                 <StepReference data={data} onChange={setData} />
               )}
-              {step === 4 && data.style && data.sizeId && (
+              {current.key === 'pay' && (
                 <StepReview data={data} total={total} />
               )}
             </motion.div>
@@ -270,7 +360,7 @@ export default function CommissionPage() {
               <ArrowLeft size={14} /> Back
             </button>
 
-            {step < 4 && (
+            {current.key !== 'pay' && (
               <button
                 onClick={next}
                 disabled={!canContinue}
@@ -280,7 +370,7 @@ export default function CommissionPage() {
                 <ArrowRight size={14} />
               </button>
             )}
-            {step === 4 && (
+            {current.key === 'pay' && (
               <button
                 onClick={submit}
                 disabled={submitting}
@@ -301,7 +391,6 @@ export default function CommissionPage() {
             )}
           </div>
 
-          {/* Trust line */}
           <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-sans text-[10px] uppercase tracking-widest text-ivory/40">
             <span className="inline-flex items-center gap-2">
               <ShieldCheck size={12} className="text-gold" /> SSL secured
@@ -309,7 +398,7 @@ export default function CommissionPage() {
             <span>·</span>
             <span>Paystack-verified payments</span>
             <span>·</span>
-            <span>24&ndash;48 hr delivery</span>
+            <span>24&ndash;48 hr soft copy delivery</span>
           </div>
         </div>
       </section>
@@ -319,40 +408,42 @@ export default function CommissionPage() {
   );
 }
 
-/* ------------------------- Step 1: Style ------------------------- */
+/* ===================================================================
+ * Step 1 — Service
+ * ================================================================ */
 
-function StepStyle({
-  style,
+function StepService({
+  selected,
   onPick,
 }: {
-  style: Style | null;
+  selected: Style | null;
   onPick: (s: Style) => void;
 }) {
-  /** Subtle baby-portrait previews — one for each voice. */
   const previews: Record<Style, string> = {
     charcoal: '/style-charcoal.png',
     urban: '/style-urban.png',
+    restoration: '/artworks/detailed-02.png',
   };
-  /** Rotating border gradient — gold for charcoal, pink→cyan for urban. */
   const glow: Record<Style, string> = {
     charcoal:
       'conic-gradient(from 0deg, rgba(212,175,55,0) 0%, rgba(212,175,55,0.95) 8%, rgba(212,175,55,0) 24%, rgba(212,175,55,0) 100%)',
     urban:
       'conic-gradient(from 0deg, rgba(217,70,239,0) 0%, rgba(217,70,239,0.95) 7%, rgba(6,182,212,0.95) 14%, rgba(217,70,239,0) 28%, rgba(217,70,239,0) 100%)',
+    restoration:
+      'conic-gradient(from 0deg, rgba(245,158,11,0) 0%, rgba(245,158,11,0.95) 8%, rgba(244,114,182,0.8) 16%, rgba(245,158,11,0) 28%, rgba(245,158,11,0) 100%)',
   };
-
   return (
     <div>
       <h2 className="font-serif text-3xl text-ivory md:text-4xl">
-        Pick your <span className="italic gold-text">voice</span>.
+        Pick your <span className="italic gold-text">service</span>.
       </h2>
       <p className="mt-3 font-sans text-ivory/60">
-        Two distinct studios. Same hand.
+        Three studios. One signature finish.
       </p>
 
-      <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
-        {(['charcoal', 'urban'] as Style[]).map((s) => {
-          const active = style === s;
+      <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-3">
+        {(['charcoal', 'urban', 'restoration'] as Style[]).map((s) => {
+          const active = selected === s;
           const meta = STYLES[s];
           return (
             <button
@@ -360,7 +451,6 @@ function StepStyle({
               onClick={() => onPick(s)}
               className="group relative block w-full overflow-hidden rounded-[20px] text-left"
             >
-              {/* Rotating glow ring — sits behind, visible only at the 2px edge */}
               <div
                 aria-hidden
                 className={`absolute inset-0 rounded-[20px] transition-opacity duration-500 ${
@@ -371,43 +461,29 @@ function StepStyle({
                   animation: 'spin 6s linear infinite',
                 }}
               />
-
-              {/* Inner card — covers the gradient except for the 2px ring at the edge */}
               <div className="relative m-[2px] overflow-hidden rounded-[18px] bg-charcoal">
-                <div className="relative aspect-[4/3]">
+                <div className="relative aspect-[4/5]">
                   <img
                     src={previews[s]}
                     alt={meta.label}
-                    onError={(e) => {
-                      // Try .jpg if .png is missing, then give up gracefully
-                      const img = e.currentTarget;
-                      if (img.src.endsWith('.png')) {
-                        img.src = previews[s].replace('.png', '.jpg');
-                      } else {
-                        img.style.display = 'none';
-                      }
-                    }}
+                    onError={(e) => ((e.currentTarget.style.display = 'none'))}
                     className="absolute inset-0 h-full w-full object-cover opacity-30 transition-all duration-500 group-hover:scale-105 group-hover:opacity-75"
                   />
-                  {/* Legibility veil — keeps text crisp regardless of preview */}
                   <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/60 to-charcoal/30" />
                 </div>
-
-                {/* Text content */}
-                <div className="absolute bottom-0 left-0 right-0 p-6">
+                <div className="absolute bottom-0 left-0 right-0 p-5">
                   <span className="eyebrow">{meta.eyebrow}</span>
-                  <div className="mt-2 font-serif text-2xl italic text-ivory">
+                  <div className="mt-2 font-serif text-xl italic text-ivory md:text-2xl">
                     {meta.label}
                   </div>
-                  <p className="mt-1 font-sans text-xs text-ivory/65">{meta.tagline}</p>
+                  <p className="mt-1 font-sans text-[11px] text-ivory/65">{meta.tagline}</p>
                 </div>
-
                 {active && (
                   <motion.div
-                    layoutId="style-check"
-                    className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-gold text-charcoal shadow-[0_0_24px_-4px_rgba(212,175,55,0.7)]"
+                    layoutId="service-check"
+                    className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-gold text-charcoal shadow-[0_0_24px_-4px_rgba(212,175,55,0.7)]"
                   >
-                    <Check size={18} strokeWidth={3} />
+                    <Check size={16} strokeWidth={3} />
                   </motion.div>
                 )}
               </div>
@@ -423,14 +499,149 @@ function StepStyle({
   );
 }
 
-/* ------------------------- Step 2: Size ------------------------- */
+/* ===================================================================
+ * Step 2a — Format (Portrait only)
+ * ================================================================ */
+
+function StepFormat({
+  selected,
+  onPick,
+}: {
+  selected: Format | null;
+  onPick: (f: Format) => void;
+}) {
+  return (
+    <div>
+      <h2 className="font-serif text-3xl text-ivory md:text-4xl">
+        How do you want it <span className="italic gold-text">delivered</span>?
+      </h2>
+      <p className="mt-3 font-sans text-ivory/60">
+        Soft copy is instant — emailed worldwide. Framed is a finished
+        wall-ready piece you collect at our Lagos studio.
+      </p>
+
+      <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
+        {(['soft', 'framed'] as Format[]).map((f) => {
+          const active = selected === f;
+          const meta = FORMATS[f];
+          const Icon = f === 'soft' ? Mail : Frame;
+          return (
+            <button
+              key={f}
+              onClick={() => onPick(f)}
+              className={`group relative block w-full overflow-hidden rounded-2xl border-2 p-6 text-left transition-all ${
+                active
+                  ? 'border-gold bg-gold/[0.05]'
+                  : 'border-ivory/10 hover:border-ivory/30 hover:bg-ivory/[0.02]'
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="grid h-12 w-12 place-items-center rounded-xl border border-gold/30 bg-gold/10 text-gold">
+                  <Icon size={20} strokeWidth={1.5} />
+                </div>
+                {active && (
+                  <span className="grid h-7 w-7 place-items-center rounded-full bg-gold text-charcoal">
+                    <Check size={14} strokeWidth={3} />
+                  </span>
+                )}
+              </div>
+              <span className="eyebrow mt-5 block">{meta.eyebrow}</span>
+              <div className="mt-2 font-serif text-2xl italic text-ivory">{meta.label}</div>
+              <p className="mt-2 font-sans text-sm text-ivory/65">{meta.tagline}</p>
+
+              {f === 'framed' && (
+                <div className="mt-5 flex items-start gap-2 rounded-xl border border-gold/20 bg-gold/[0.04] p-3 font-sans text-[11px] leading-relaxed text-ivory/75">
+                  <MapPin size={14} className="mt-0.5 shrink-0 text-gold" />
+                  <span>
+                    <strong className="text-ivory">Pickup:</strong> {PICKUP_HQ.address}
+                    {PICKUP_HQ.islandBranchSoon && (
+                      <>
+                        {' '}
+                        <span className="text-ivory/45">· Island branch coming soon</span>
+                      </>
+                    )}
+                  </span>
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ===================================================================
+ * Step 2b — Damage level (Restoration only)
+ * ================================================================ */
+
+function StepDamage({
+  selected,
+  onPick,
+}: {
+  selected: DamageLevel | null;
+  onPick: (d: DamageLevel) => void;
+}) {
+  return (
+    <div>
+      <h2 className="font-serif text-3xl text-ivory md:text-4xl">
+        How bad is the <span className="italic gold-text">damage</span>?
+      </h2>
+      <p className="mt-3 font-sans text-ivory/60">
+        Pick the closest match. Flat fair pricing, no size tiers — delivered as
+        a high-resolution soft copy in 24&ndash;48 hours.
+      </p>
+
+      <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
+        {(['light', 'heavy'] as DamageLevel[]).map((d) => {
+          const active = selected === d;
+          const meta = RESTORATION_LEVELS[d];
+          return (
+            <button
+              key={d}
+              onClick={() => onPick(d)}
+              className={`group relative block w-full overflow-hidden rounded-2xl border-2 p-6 text-left transition-all ${
+                active
+                  ? 'border-gold bg-gold/[0.05]'
+                  : 'border-ivory/10 hover:border-ivory/30 hover:bg-ivory/[0.02]'
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="grid h-12 w-12 place-items-center rounded-xl border border-gold/30 bg-gold/10 text-gold">
+                  <Wand2 size={20} strokeWidth={1.5} />
+                </div>
+                {active && (
+                  <span className="grid h-7 w-7 place-items-center rounded-full bg-gold text-charcoal">
+                    <Check size={14} strokeWidth={3} />
+                  </span>
+                )}
+              </div>
+              <span className="eyebrow mt-5 block">{meta.eyebrow}</span>
+              <div className="mt-2 font-serif text-2xl italic text-ivory">{meta.label}</div>
+              <p className="mt-2 font-sans text-sm text-ivory/65">{meta.description}</p>
+              <div className="mt-5 font-serif text-3xl font-light text-gold">
+                {formatNGN(meta.price)}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ===================================================================
+ * Step 3 — Size (Portrait only)
+ * ================================================================ */
 
 function StepSize({
   style,
+  format,
   sizeId,
   onPick,
 }: {
-  style: Style;
+  style: Exclude<Style, 'restoration'>;
+  format: Format;
   sizeId: SizeId | null;
   onPick: (id: SizeId) => void;
 }) {
@@ -440,13 +651,24 @@ function StepSize({
         How <span className="italic gold-text">big</span>?
       </h2>
       <p className="mt-3 font-sans text-ivory/60">
-        Digital file delivered. Print at the size of your choice, up to{' '}
-        <span className="text-ivory/80">120 × 120 inches</span>.
+        {format === 'framed' ? (
+          <>
+            <strong className="text-ivory">Framed</strong> total includes the
+            Black Pre-cast frame. Soft copy is included &mdash; you receive
+            both file and physical piece.
+          </>
+        ) : (
+          <>
+            Digital file delivered. Print at the size of your choice, up to{' '}
+            <span className="text-ivory/80">120 × 120 inches</span>.
+          </>
+        )}
       </p>
 
       <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {SIZES.map((size) => {
-          const price = style === 'charcoal' ? size.charcoal : size.urban;
+          const softBase = style === 'charcoal' ? size.charcoal : size.urban;
+          const total = format === 'framed' ? softBase + size.frame : softBase;
           const active = sizeId === size.id;
           return (
             <button
@@ -462,7 +684,9 @@ function StepSize({
                 <div>
                   <div className="font-serif text-2xl text-ivory">{size.label}</div>
                   <div className="mt-1 font-sans text-[10px] uppercase tracking-widest text-ivory/40">
-                    600 DPI digital file
+                    {format === 'framed'
+                      ? 'Print + Black Pre-cast frame'
+                      : '600 DPI digital file'}
                   </div>
                 </div>
                 {active && (
@@ -471,10 +695,15 @@ function StepSize({
                   </span>
                 )}
               </div>
-              <div className="mt-6 flex items-baseline gap-2">
+              <div className="mt-6 flex items-baseline gap-3">
                 <span className="font-serif text-3xl font-light text-gold">
-                  {formatNGN(price)}
+                  {formatNGN(total)}
                 </span>
+                {format === 'framed' && (
+                  <span className="font-sans text-[10px] uppercase tracking-widest text-ivory/40">
+                    {formatNGN(softBase)} + {formatNGN(size.frame)} frame
+                  </span>
+                )}
               </div>
             </button>
           );
@@ -484,7 +713,9 @@ function StepSize({
   );
 }
 
-/* ------------------------- Step 3: Details ------------------------- */
+/* ===================================================================
+ * Step 4 — Details
+ * ================================================================ */
 
 function StepDetails({
   data,
@@ -524,10 +755,14 @@ function StepDetails({
           onChangeNumber={(v) => onChange({ ...data, phoneNumber: v })}
         />
         <Field
-          label="Subject of the portrait (optional)"
+          label="Subject or notes (optional)"
           value={data.notes}
           onChange={(v) => onChange({ ...data, notes: v })}
-          placeholder="e.g., my late father · my wife · Burna Boy tribute"
+          placeholder={
+            data.style === 'restoration'
+              ? 'e.g., my grandmother · taken in 1972'
+              : 'e.g., my late father · Burna Boy tribute'
+          }
         />
       </div>
 
@@ -567,7 +802,6 @@ function Field({
   );
 }
 
-/* Phone field with country-code dropdown */
 function PhoneField({
   label,
   countryCode,
@@ -581,10 +815,7 @@ function PhoneField({
   onChangeCountry: (c: string) => void;
   onChangeNumber: (v: string) => void;
 }) {
-  // Build a synthetic value for the select so duplicate codes (e.g., +1 US vs +1 CA) work
-  const selected = COUNTRY_CODES.findIndex(
-    (c) => c.code === countryCode
-  );
+  const selected = COUNTRY_CODES.findIndex((c) => c.code === countryCode);
   return (
     <label className="block">
       <span className="block font-sans text-[10px] uppercase tracking-widest text-ivory/50">
@@ -624,7 +855,9 @@ function PhoneField({
   );
 }
 
-/* ------------------------- Step 4: Reference Photo ------------------------- */
+/* ===================================================================
+ * Step 5 — Reference
+ * ================================================================ */
 
 function StepReference({
   data,
@@ -653,13 +886,25 @@ function StepReference({
     reader.readAsDataURL(file);
   };
 
+  const isRestoration = data.style === 'restoration';
+
   return (
     <div>
       <h2 className="font-serif text-3xl text-ivory md:text-4xl">
-        Drop the <span className="italic gold-text">reference</span>.
+        {isRestoration ? (
+          <>
+            Drop the <span className="italic gold-text">old photo</span>.
+          </>
+        ) : (
+          <>
+            Drop the <span className="italic gold-text">reference</span>.
+          </>
+        )}
       </h2>
       <p className="mt-3 font-sans text-ivory/60">
-        A clear photo, well-lit, focused on the face. PNG or JPG, under 5 MB.
+        {isRestoration
+          ? 'Even if it’s damaged, send the best version you have. PNG or JPG, under 5 MB.'
+          : 'A clear photo, well-lit, focused on the face. PNG or JPG, under 5 MB.'}
       </p>
 
       <div className="mt-10">
@@ -728,11 +973,16 @@ function StepReference({
   );
 }
 
-/* ------------------------- Step 5: Review & Pay ------------------------- */
+/* ===================================================================
+ * Step 6 — Review & Pay
+ * ================================================================ */
 
 function StepReview({ data, total }: { data: FormData; total: number }) {
-  const size = SIZES.find((s) => s.id === data.sizeId);
   const styleMeta = data.style ? STYLES[data.style] : null;
+  const sizeOpt = data.sizeId ? SIZES.find((s) => s.id === data.sizeId) : null;
+  const formatMeta = data.format ? FORMATS[data.format] : null;
+  const damageMeta = data.damageLevel ? RESTORATION_LEVELS[data.damageLevel] : null;
+
   return (
     <div>
       <h2 className="font-serif text-3xl text-ivory md:text-4xl">
@@ -753,8 +1003,10 @@ function StepReview({ data, total }: { data: FormData; total: number }) {
         </div>
 
         <div className="space-y-6 lg:col-span-3">
-          <SummaryRow label="Style" value={styleMeta?.label || ''} />
-          <SummaryRow label="Size" value={size?.label || ''} />
+          <SummaryRow label="Service" value={styleMeta?.label || ''} />
+          {formatMeta && <SummaryRow label="Format" value={formatMeta.label} />}
+          {sizeOpt && <SummaryRow label="Size" value={sizeOpt.label} />}
+          {damageMeta && <SummaryRow label="Damage" value={damageMeta.label} />}
           <SummaryRow label="Customer" value={data.name} sub={data.email} />
           {data.phoneNumber.trim() && (
             <SummaryRow
@@ -763,6 +1015,24 @@ function StepReview({ data, total }: { data: FormData; total: number }) {
             />
           )}
           {data.notes && <SummaryRow label="Notes" value={data.notes} />}
+
+          {data.format === 'framed' && (
+            <div className="rounded-xl border border-gold/30 bg-gold/[0.05] p-4 font-sans text-sm text-ivory/85">
+              <div className="flex items-center gap-2 text-gold">
+                <MapPin size={14} />
+                <span className="font-medium uppercase tracking-widest text-[10px]">
+                  Pickup
+                </span>
+              </div>
+              <p className="mt-2">{PICKUP_HQ.address}</p>
+              {PICKUP_HQ.islandBranchSoon && (
+                <p className="mt-1 text-[11px] text-ivory/50">
+                  Island branch coming soon — until then, all framed orders are
+                  collected at our mainland studio.
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="hairline" />
 
@@ -779,7 +1049,8 @@ function StepReview({ data, total }: { data: FormData; total: number }) {
               </div>
             </div>
             <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/[0.08] px-3 py-1.5 font-sans text-[10px] uppercase tracking-widest text-gold">
-              <Sparkles size={11} /> 600 DPI · 48 hr
+              <Sparkles size={11} />
+              {data.style === 'restoration' ? 'Restored · 48 hr' : data.format === 'framed' ? 'Ready for pickup' : '600 DPI · 48 hr'}
             </div>
           </div>
         </div>
