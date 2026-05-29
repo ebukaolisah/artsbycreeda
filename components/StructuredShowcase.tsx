@@ -119,7 +119,7 @@ export default function StructuredShowcase({
   };
 
   return (
-    <section id={id} className="relative bg-charcoal py-12 md:py-16">
+    <section id={id} className="relative bg-charcoal py-10 md:py-14">
       <div className="container-art">
         {/* Compact section header — slim so the whole gallery fits in one viewport */}
         <div className="mb-5 flex items-baseline justify-between gap-4">
@@ -150,7 +150,7 @@ export default function StructuredShowcase({
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-7"
           >
-            <div className="relative aspect-[4/5] max-h-[78vh] w-full overflow-hidden rounded-[32px] border border-ivory/15 bg-charcoal shadow-[0_40px_140px_-40px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.06)] ring-1 ring-inset ring-ivory/[0.04]">
+            <div className="relative aspect-[4/5] max-h-[55vh] sm:max-h-[58vh] md:max-h-[60vh] lg:max-h-[62vh] w-full overflow-hidden rounded-[28px] md:rounded-[32px] border border-ivory/15 bg-charcoal shadow-[0_40px_140px_-40px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.06)] ring-1 ring-inset ring-ivory/[0.04]">
               <AnimatePresence mode="wait">
                 <motion.img
                   key={hero.id}
@@ -160,6 +160,7 @@ export default function StructuredShowcase({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.98 }}
                   transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                  style={{ objectPosition: 'center top' }}
                   className="absolute inset-0 h-full w-full object-cover"
                 />
               </AnimatePresence>
@@ -259,7 +260,7 @@ export default function StructuredShowcase({
               </a>
             </div>
 
-            <div className={`grid flex-1 ${gridColsClass} gap-2.5 lg:gap-3 lg:max-h-[calc(78vh-3rem)]`}>
+            <div className={`grid flex-1 ${gridColsClass} gap-2.5 lg:gap-3 lg:max-h-[calc(62vh-3rem)]`}>
               {others.map((piece) => (
                 <PieceCard
                   key={piece.id}
@@ -425,6 +426,7 @@ const PieceCard = forwardRef<
         <img
           src={piece.src}
           alt={piece.title}
+          style={{ objectPosition: 'center top' }}
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         {/* Subtle vignette */}

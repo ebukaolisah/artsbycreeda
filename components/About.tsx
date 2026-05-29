@@ -45,13 +45,31 @@ export default function About() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="mt-12 aspect-[5/6] w-full overflow-hidden rounded-2xl border border-ivory/10"
+            className="group relative mt-12 aspect-[4/5] w-full overflow-hidden rounded-[28px] border border-ivory/10 shadow-[0_30px_100px_-30px_rgba(0,0,0,0.7)] ring-1 ring-inset ring-ivory/[0.04]"
           >
             <img
-              src="/artworks/detailed-01.png"
-              alt="Studio portrait"
-              className="h-full w-full object-cover grayscale-[20%] transition-all duration-700 hover:grayscale-0 hover:scale-105"
+              src="/creeda-portrait.jpg"
+              alt="Creeda — the artist behind ArtsByCreeda"
+              onError={(e) => {
+                // Soft fallback until the photo is dropped into /public
+                (e.currentTarget as HTMLImageElement).src = '/artworks/detailed-01.png';
+              }}
+              className="h-full w-full object-cover grayscale-[10%] transition-all duration-700 group-hover:grayscale-0 group-hover:scale-[1.03]"
             />
+            {/* Subtle bottom vignette for the name plate */}
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-charcoal/90 via-charcoal/30 to-transparent" />
+            {/* Name plate */}
+            <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between">
+              <div>
+                <div className="font-serif text-2xl italic text-ivory">Creeda</div>
+                <div className="mt-1 font-sans text-[10px] uppercase tracking-widest text-ivory/55">
+                  Founder &amp; Lead Artist
+                </div>
+              </div>
+              <div className="grid h-9 w-9 place-items-center rounded-full border border-gold/40 bg-charcoal/50 text-gold backdrop-blur-sm">
+                <span className="font-serif text-sm">✦</span>
+              </div>
+            </div>
           </motion.div>
         </motion.div>
 
