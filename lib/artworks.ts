@@ -4,7 +4,8 @@ export type ArtworkCategory =
   | 'Anthem'
   | 'Legacy'
   | 'Mogul'
-  | 'Starboy';
+  | 'Starboy'
+  | 'Mr Money';
 
 export interface Artwork {
   id: string;
@@ -59,10 +60,10 @@ export const ARTWORKS: Artwork[] = [
     featured: true,
   },
   {
-    id: 'phenom',
-    title: 'The Phenom',
+    id: 'asake',
+    title: 'Asake',
     src: '/artworks/asake.png',
-    category: 'Spotlight',
+    category: 'Mr Money',
     year: 2025,
     medium: 'Digital Charcoal',
     description:
