@@ -330,8 +330,8 @@ function StepStyle({
 }) {
   /** Subtle baby-portrait previews — one for each voice. */
   const previews: Record<Style, string> = {
-    charcoal: '/style-charcoal.jpg',
-    urban: '/style-urban.jpg',
+    charcoal: '/style-charcoal.png',
+    urban: '/style-urban.png',
   };
   /** Rotating border gradient — gold for charcoal, pink→cyan for urban. */
   const glow: Record<Style, string> = {
@@ -378,7 +378,15 @@ function StepStyle({
                   <img
                     src={previews[s]}
                     alt={meta.label}
-                    onError={(e) => ((e.currentTarget.style.display = 'none'))}
+                    onError={(e) => {
+                      // Try .jpg if .png is missing, then give up gracefully
+                      const img = e.currentTarget;
+                      if (img.src.endsWith('.png')) {
+                        img.src = previews[s].replace('.png', '.jpg');
+                      } else {
+                        img.style.display = 'none';
+                      }
+                    }}
                     className="absolute inset-0 h-full w-full object-cover opacity-30 transition-all duration-500 group-hover:scale-105 group-hover:opacity-75"
                   />
                   {/* Legibility veil — keeps text crisp regardless of preview */}
