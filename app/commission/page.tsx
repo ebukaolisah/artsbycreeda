@@ -15,7 +15,8 @@ interface FormData {
   sizeId: SizeId | null;
   name: string;
   email: string;
-  phone: string;
+  countryCode: string;
+  phoneNumber: string;
   notes: string;
   refFile: File | null;
   refPreview: string | null;
@@ -26,11 +27,37 @@ const EMPTY: FormData = {
   sizeId: null,
   name: '',
   email: '',
-  phone: '',
+  countryCode: '+234',
+  phoneNumber: '',
   notes: '',
   refFile: null,
   refPreview: null,
 };
+
+/** Country dial codes, Nigeria first, then most-common worldwide */
+const COUNTRY_CODES: Array<{ code: string; flag: string; name: string }> = [
+  { code: '+234', flag: '🇳🇬', name: 'Nigeria' },
+  { code: '+1',   flag: '🇺🇸', name: 'United States' },
+  { code: '+44',  flag: '🇬🇧', name: 'United Kingdom' },
+  { code: '+1',   flag: '🇨🇦', name: 'Canada' },
+  { code: '+233', flag: '🇬🇭', name: 'Ghana' },
+  { code: '+254', flag: '🇰🇪', name: 'Kenya' },
+  { code: '+27',  flag: '🇿🇦', name: 'South Africa' },
+  { code: '+20',  flag: '🇪🇬', name: 'Egypt' },
+  { code: '+33',  flag: '🇫🇷', name: 'France' },
+  { code: '+49',  flag: '🇩🇪', name: 'Germany' },
+  { code: '+39',  flag: '🇮🇹', name: 'Italy' },
+  { code: '+34',  flag: '🇪🇸', name: 'Spain' },
+  { code: '+31',  flag: '🇳🇱', name: 'Netherlands' },
+  { code: '+971', flag: '🇦🇪', name: 'UAE' },
+  { code: '+966', flag: '🇸🇦', name: 'Saudi Arabia' },
+  { code: '+91',  flag: '🇮🇳', name: 'India' },
+  { code: '+86',  flag: '🇨🇳', name: 'China' },
+  { code: '+81',  flag: '🇯🇵', name: 'Japan' },
+  { code: '+61',  flag: '🇦🇺', name: 'Australia' },
+  { code: '+55',  flag: '🇧🇷', name: 'Brazil' },
+  { code: '+52',  flag: '🇲🇽', name: 'Mexico' },
+];
 
 const STEP_LABELS = ['Style', 'Size', 'Details', 'Reference', 'Pay'];
 
@@ -67,10 +94,10 @@ export default function CommissionPage() {
       case 1:
         return data.sizeId !== null;
       case 2:
+        // Phone is OPTIONAL — only name + valid email required
         return (
           data.name.trim().length >= 2 &&
-          /^\S+@\S+\.\S+$/.test(data.email) &&
-          data.phone.trim().length >= 6
+          /^\S+@\S+\.\S+$/.test(data.email)
         );
       case 3:
         return data.refFile !== null;
@@ -101,7 +128,11 @@ export default function CommissionPage() {
       fd.append('sizeId', data.sizeId);
       fd.append('name', data.name);
       fd.append('email', data.email);
-      fd.append('phone', data.phone);
+      // Phone is optional — combine country code + number only if provided
+      const fullPhone = data.phoneNumber.trim()
+        ? `${data.countryCode} ${data.phoneNumber.trim()}`
+        : '';
+      fd.append('phone', fullPhone);
       fd.append('notes', data.notes);
       fd.append('amount', String(total));
       fd.append('refPhoto', data.refFile);
@@ -297,9 +328,17 @@ function StepStyle({
   style: Style | null;
   onPick: (s: Style) => void;
 }) {
+  /** Subtle baby-portrait previews — one for each voice. */
   const previews: Record<Style, string> = {
-    charcoal: '/artworks/regal-01.png',
-    urban: '/artworks/pop/pop-01.png',
+    charcoal: '/style-charcoal.jpg',
+    urban: '/style-urban.jpg',
+  };
+  /** Rotating border gradient — gold for charcoal, pink→cyan for urban. */
+  const glow: Record<Style, string> = {
+    charcoal:
+      'conic-gradient(from 0deg, rgba(212,175,55,0) 0%, rgba(212,175,55,0.95) 8%, rgba(212,175,55,0) 24%, rgba(212,175,55,0) 100%)',
+    urban:
+      'conic-gradient(from 0deg, rgba(217,70,239,0) 0%, rgba(217,70,239,0.95) 7%, rgba(6,182,212,0.95) 14%, rgba(217,70,239,0) 28%, rgba(217,70,239,0) 100%)',
   };
 
   return (
@@ -319,36 +358,59 @@ function StepStyle({
             <button
               key={s}
               onClick={() => onPick(s)}
-              className={`group relative overflow-hidden rounded-2xl border-2 text-left transition-all ${
-                active ? 'border-gold' : 'border-ivory/10 hover:border-ivory/30'
-              }`}
+              className="group relative block w-full overflow-hidden rounded-[20px] text-left"
             >
-              <div className="aspect-[4/3] overflow-hidden">
-                <img
-                  src={previews[s]}
-                  alt={meta.label}
-                  onError={(e) => ((e.currentTarget.style.opacity = '0'))}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/30 to-transparent" />
+              {/* Rotating glow ring — sits behind, visible only at the 2px edge */}
+              <div
+                aria-hidden
+                className={`absolute inset-0 rounded-[20px] transition-opacity duration-500 ${
+                  active ? 'opacity-100' : 'opacity-60 group-hover:opacity-100'
+                }`}
+                style={{
+                  background: glow[s],
+                  animation: 'spin 6s linear infinite',
+                }}
+              />
+
+              {/* Inner card — covers the gradient except for the 2px ring at the edge */}
+              <div className="relative m-[2px] overflow-hidden rounded-[18px] bg-charcoal">
+                <div className="relative aspect-[4/3]">
+                  <img
+                    src={previews[s]}
+                    alt={meta.label}
+                    onError={(e) => ((e.currentTarget.style.display = 'none'))}
+                    className="absolute inset-0 h-full w-full object-cover opacity-30 transition-all duration-500 group-hover:scale-105 group-hover:opacity-75"
+                  />
+                  {/* Legibility veil — keeps text crisp regardless of preview */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/60 to-charcoal/30" />
+                </div>
+
+                {/* Text content */}
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <span className="eyebrow">{meta.eyebrow}</span>
+                  <div className="mt-2 font-serif text-2xl italic text-ivory">
+                    {meta.label}
+                  </div>
+                  <p className="mt-1 font-sans text-xs text-ivory/65">{meta.tagline}</p>
+                </div>
+
+                {active && (
+                  <motion.div
+                    layoutId="style-check"
+                    className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-gold text-charcoal shadow-[0_0_24px_-4px_rgba(212,175,55,0.7)]"
+                  >
+                    <Check size={18} strokeWidth={3} />
+                  </motion.div>
+                )}
               </div>
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <span className="eyebrow">{meta.eyebrow}</span>
-                <div className="mt-2 font-serif text-2xl italic text-ivory">{meta.label}</div>
-                <p className="mt-1 font-sans text-xs text-ivory/60">{meta.tagline}</p>
-              </div>
-              {active && (
-                <motion.div
-                  layoutId="style-check"
-                  className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-gold text-charcoal"
-                >
-                  <Check size={18} strokeWidth={3} />
-                </motion.div>
-              )}
             </button>
           );
         })}
       </div>
+
+      <p className="mt-6 text-center font-sans text-[10px] uppercase tracking-widest text-ivory/35">
+        Hover a card — the border illuminates.
+      </p>
     </div>
   );
 }
@@ -446,11 +508,12 @@ function StepDetails({
           onChange={(v) => onChange({ ...data, email: v })}
           placeholder="you@email.com"
         />
-        <Field
-          label="WhatsApp or phone"
-          value={data.phone}
-          onChange={(v) => onChange({ ...data, phone: v })}
-          placeholder="+234 ..."
+        <PhoneField
+          label="WhatsApp or phone (optional)"
+          countryCode={data.countryCode}
+          phoneNumber={data.phoneNumber}
+          onChangeCountry={(c) => onChange({ ...data, countryCode: c })}
+          onChangeNumber={(v) => onChange({ ...data, phoneNumber: v })}
         />
         <Field
           label="Subject of the portrait (optional)"
@@ -492,6 +555,63 @@ function Field({
         placeholder={placeholder}
         className="mt-2 w-full rounded-xl border border-ivory/10 bg-ivory/[0.02] px-4 py-3 font-sans text-sm text-ivory placeholder:text-ivory/30 focus:border-gold focus:bg-ivory/[0.04] focus:outline-none"
       />
+    </label>
+  );
+}
+
+/* Phone field with country-code dropdown */
+function PhoneField({
+  label,
+  countryCode,
+  phoneNumber,
+  onChangeCountry,
+  onChangeNumber,
+}: {
+  label: string;
+  countryCode: string;
+  phoneNumber: string;
+  onChangeCountry: (c: string) => void;
+  onChangeNumber: (v: string) => void;
+}) {
+  // Build a synthetic value for the select so duplicate codes (e.g., +1 US vs +1 CA) work
+  const selected = COUNTRY_CODES.findIndex(
+    (c) => c.code === countryCode
+  );
+  return (
+    <label className="block">
+      <span className="block font-sans text-[10px] uppercase tracking-widest text-ivory/50">
+        {label}
+      </span>
+      <div className="mt-2 flex items-stretch gap-2 rounded-xl border border-ivory/10 bg-ivory/[0.02] focus-within:border-gold focus-within:bg-ivory/[0.04]">
+        <div className="relative">
+          <select
+            value={selected >= 0 ? selected : 0}
+            onChange={(e) => {
+              const idx = Number(e.target.value);
+              onChangeCountry(COUNTRY_CODES[idx].code);
+            }}
+            className="h-full appearance-none rounded-l-xl bg-transparent py-3 pl-4 pr-8 font-sans text-sm text-ivory focus:outline-none"
+            aria-label="Country code"
+          >
+            {COUNTRY_CODES.map((c, i) => (
+              <option key={`${c.code}-${c.name}`} value={i} className="bg-charcoal text-ivory">
+                {c.flag} {c.code} · {c.name}
+              </option>
+            ))}
+          </select>
+          <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-ivory/40">
+            ▾
+          </span>
+        </div>
+        <span className="my-2 w-px bg-ivory/10" />
+        <input
+          type="tel"
+          value={phoneNumber}
+          onChange={(e) => onChangeNumber(e.target.value.replace(/[^\d\s-]/g, ''))}
+          placeholder="8032815429"
+          className="flex-1 bg-transparent pr-4 font-sans text-sm text-ivory placeholder:text-ivory/30 focus:outline-none"
+        />
+      </div>
     </label>
   );
 }
@@ -628,7 +748,12 @@ function StepReview({ data, total }: { data: FormData; total: number }) {
           <SummaryRow label="Style" value={styleMeta?.label || ''} />
           <SummaryRow label="Size" value={size?.label || ''} />
           <SummaryRow label="Customer" value={data.name} sub={data.email} />
-          <SummaryRow label="Contact" value={data.phone} />
+          {data.phoneNumber.trim() && (
+            <SummaryRow
+              label="Contact"
+              value={`${data.countryCode} ${data.phoneNumber.trim()}`}
+            />
+          )}
           {data.notes && <SummaryRow label="Notes" value={data.notes} />}
 
           <div className="hairline" />

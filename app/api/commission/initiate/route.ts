@@ -30,8 +30,7 @@ export async function POST(req: NextRequest) {
     if (name.length < 2) return NextResponse.json({ error: 'Name required' }, { status: 400 });
     if (!/^\S+@\S+\.\S+$/.test(email))
       return NextResponse.json({ error: 'Valid email required' }, { status: 400 });
-    if (phone.length < 6)
-      return NextResponse.json({ error: 'Phone required' }, { status: 400 });
+    // Phone is OPTIONAL — accept empty or a sensible length
     if (!refPhoto)
       return NextResponse.json({ error: 'Reference photo required' }, { status: 400 });
     if (refPhoto.size > 5 * 1024 * 1024)

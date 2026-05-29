@@ -15,7 +15,8 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000)",
       "Bash(curl -s -o /dev/null -w \"commission:%{http_code} home:%{http_code}\\\\n\" http://localhost:3000/commission)",
       "Bash(curl -s -o /dev/null -w \"%{http_code} \" http://localhost:3000/commission)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/api/admin/orders)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/api/admin/orders)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/commission)"
     ]
   }
 }
