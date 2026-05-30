@@ -20,6 +20,16 @@ const TITLE = 'ART BY CREEDA';
 const LETTER_DELAY = 0.085; // seconds between each letter (typewriter speed)
 const TITLE_START = 1.6;
 
+/**
+ * Electric current that runs through the wordmark forever after the typewriter
+ * settles. Tuned so one full sweep (A → A) takes exactly 6s — matching the
+ * pencil's rotation, so the spin and the spark "rhyme."
+ */
+const CYCLE_DURATION = 6; // seconds per full sweep — must match pencil spin
+const FLASH_DURATION = 0.55; // each letter's flash lasts ~half a second
+const SHOCK_START = 3.2; // wait for typewriter to fully settle before sparking
+const PER_LETTER_STAGGER = CYCLE_DURATION / TITLE.length;
+
 export default function AnimatedLogo() {
   return (
     <div className="relative mx-auto flex aspect-square w-full max-w-md flex-col items-center justify-center px-6 lg:max-w-none lg:px-12">
