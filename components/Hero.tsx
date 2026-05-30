@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { ArrowRight, Star } from 'lucide-react';
 import { BRAND } from '@/lib/constants';
+import AnimatedLogo from './AnimatedLogo';
 
 export default function Hero() {
   const ref = useRef<HTMLDivElement>(null);
@@ -107,29 +108,12 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Right — the animated SVG logo (loaded via <object> so its internal scripts/animations run) */}
+        {/* Right — the bespoke animated logo (spinning pencil + typewriter title + charcoal slash) */}
         <motion.div
           style={{ y, scale, opacity }}
           className="relative z-10 lg:col-span-5"
         >
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.4, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="relative mx-auto aspect-square w-full max-w-md lg:max-w-none"
-          >
-            <object
-              data="/logo.svg"
-              type="image/svg+xml"
-              aria-label="Art By Creeda — luxury charcoal portrait studio"
-              className="pointer-events-none h-full w-full"
-            >
-              {/* Fallback if SVG can't load at all */}
-              <span className="grid h-full w-full place-items-center font-serif text-3xl italic text-gold">
-                Art By Creeda
-              </span>
-            </object>
-          </motion.div>
+          <AnimatedLogo />
         </motion.div>
       </div>
 
