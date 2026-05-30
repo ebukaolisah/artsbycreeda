@@ -27,17 +27,6 @@ export interface Artwork {
  */
 export const ARTWORKS: Artwork[] = [
   {
-    id: 'starboy',
-    title: 'Starboy',
-    src: '/artworks/wizkid.png',
-    category: 'Starboy',
-    year: 2025,
-    medium: 'Digital Charcoal',
-    description:
-      'From Surulere to Madison Square — Made in Lagos, drawn in light.',
-    featured: true,
-  },
-  {
     id: 'african-giant',
     title: 'The African Giant',
     src: '/artworks/burna-01.png',
@@ -128,6 +117,17 @@ export const ARTWORKS: Artwork[] = [
     medium: 'Digital Charcoal',
     description:
       'Behind every breakout star — a man with the microphone and the instinct.',
+  },
+  {
+    id: 'starboy',
+    title: 'Starboy',
+    src: '/artworks/wizkid.png',
+    category: 'Starboy',
+    year: 2025,
+    medium: 'Digital Charcoal',
+    description:
+      'From Surulere to Madison Square — Made in Lagos, drawn in light.',
+    featured: true,
   },
 ];
 

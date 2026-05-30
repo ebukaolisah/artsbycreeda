@@ -51,11 +51,13 @@ export default function Testimonials() {
         <div className="mx-auto max-w-2xl text-center">
           <div className="inline-flex items-center gap-3">
             <span className="h-px w-10 bg-gold" />
-            <span className="eyebrow">From Collectors</span>
+            <span className="eyebrow">Words from the Wall</span>
             <span className="h-px w-10 bg-gold" />
           </div>
           <h2 className="display-text mt-6 text-5xl md:text-6xl lg:text-7xl">
-            They <span className="italic gold-text">felt</span> it.
+            Glowing <span className="italic gold-text">praise</span>,
+            <br />
+            from our collectors.
           </h2>
         </div>
       </div>

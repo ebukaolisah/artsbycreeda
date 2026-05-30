@@ -40,10 +40,10 @@ export default function Navbar() {
                 <span className="absolute inset-0 bg-gold-gradient opacity-90 transition-opacity group-hover:opacity-100" />
                 <span className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-charcoal/20" />
                 <span
-                  className="relative font-serif text-[13px] italic font-semibold tracking-[0.04em] text-charcoal md:text-[14px]"
+                  className="relative font-serif text-[13px] italic font-semibold tracking-[0.06em] text-charcoal md:text-[14px]"
                   style={{ textShadow: '0 1px 0 rgba(255,255,255,0.35)' }}
                 >
-                  AbC
+                  ABC
                 </span>
               </span>
 
