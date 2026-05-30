@@ -33,7 +33,7 @@ const PER_LETTER_STAGGER = CYCLE_DURATION / TITLE.length;
 
 export default function AnimatedLogo() {
   return (
-    <div className="relative mx-auto flex aspect-square w-full max-w-md flex-col items-center justify-center px-6 lg:max-w-none lg:px-12">
+    <div className="relative mx-auto flex aspect-square w-full max-w-md flex-col items-center px-6 pt-4 lg:max-w-none lg:px-12 lg:pt-8">
       {/* ─────────────────  PENCIL + DIVIDER LINES + BRUSH SLASH  ───────────────── */}
       <div className="relative flex items-center justify-center" style={{ height: 140 }}>
         {/* Left divider line */}
@@ -93,8 +93,8 @@ export default function AnimatedLogo() {
 
       {/* ─────────────────  ART BY CREEDA  (typewriter + electric pulse)  ───────────────── */}
       <h1
-        className="mt-10 flex items-baseline justify-center font-serif font-medium tracking-[0.15em] text-gold"
-        style={{ fontSize: 'clamp(2rem, 5.5vw, 3.5rem)' }}
+        className="mt-8 flex items-baseline justify-center font-serif font-medium tracking-[0.08em] text-gold"
+        style={{ fontSize: 'clamp(1.5rem, 4.2vw, 2.65rem)' }}
       >
         {TITLE.split('').map((char, i) => (
           <motion.span
