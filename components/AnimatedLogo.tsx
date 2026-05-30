@@ -5,15 +5,16 @@ import { motion } from 'framer-motion';
 /**
  * The Art By Creeda animated logo.
  *
- * Sequence (≈ 4.2s, then loops the pencil spin forever):
+ * Sequence (≈ 4.2s, then loops the pencil spin + electric pulse forever):
  *   0.4s  two short divider lines draw outward from the centre
  *   0.9s  the pencil drops in upright and begins spinning around its own Y-axis
  *   1.6s  ART BY CREEDA types in letter-by-letter
  *   2.8s  the charcoal slash sweeps in behind the pencil — left to right
+ *   3.2s  electric pulse starts running through the letters, A → A every 6s
  *   3.4s  subtitle fades in
  *   3.9s  decorative flourish fades in
  *
- * Pencil rotation = continuous, 6s per revolution. Slow + classy.
+ * Pencil rotation + electric sweep both take exactly 6s so they stay in rhythm.
  */
 
 const TITLE = 'ART BY CREEDA';
@@ -22,8 +23,8 @@ const TITLE_START = 1.6;
 
 /**
  * Electric current that runs through the wordmark forever after the typewriter
- * settles. Tuned so one full sweep (A → A) takes exactly 6s — matching the
- * pencil's rotation, so the spin and the spark "rhyme."
+ * settles. One full sweep (A → A) takes exactly 6s — matching the pencil's
+ * rotation, so the spin and the spark rhyme.
  */
 const CYCLE_DURATION = 6; // seconds per full sweep — must match pencil spin
 const FLASH_DURATION = 0.55; // each letter's flash lasts ~half a second
@@ -78,7 +79,7 @@ export default function AnimatedLogo() {
           <motion.div
             animate={{ rotateY: 360 }}
             transition={{
-              duration: 6,
+              duration: CYCLE_DURATION,
               ease: 'linear',
               repeat: Infinity,
               repeatType: 'loop',
@@ -90,7 +91,7 @@ export default function AnimatedLogo() {
         </motion.div>
       </div>
 
-      {/* ─────────────────  ART BY CREEDA  (typewriter)  ───────────────── */}
+      {/* ─────────────────  ART BY CREEDA  (typewriter + electric pulse)  ───────────────── */}
       <h1
         className="mt-10 flex items-baseline justify-center font-serif font-medium tracking-[0.15em] text-gold"
         style={{ fontSize: 'clamp(2rem, 5.5vw, 3.5rem)' }}
@@ -108,7 +109,33 @@ export default function AnimatedLogo() {
             className="inline-block"
             style={{ minWidth: char === ' ' ? '0.4em' : undefined }}
           >
-            {char === ' ' ? ' ' : char}
+            {/* Continuous electric pulse on top of the typed-in letter */}
+            <motion.span
+              className="inline-block"
+              style={{ willChange: 'transform, color, text-shadow' }}
+              animate={{
+                color: ['#D4AF37', '#ffffff', '#FCE07A', '#D4AF37', '#D4AF37'],
+                textShadow: [
+                  '0 0 0px transparent',
+                  '0 0 14px rgba(255,255,255,0.95), 0 0 26px rgba(94,231,255,0.85), 0 0 40px rgba(94,231,255,0.45)',
+                  '0 0 10px rgba(212,175,55,0.75), 0 0 22px rgba(212,175,55,0.45)',
+                  '0 0 0px transparent',
+                  '0 0 0px transparent',
+                ],
+                scale: [1, 1.12, 1.04, 1, 1],
+                y: [0, -2, 0, 0, 0],
+              }}
+              transition={{
+                duration: FLASH_DURATION,
+                delay: SHOCK_START + i * PER_LETTER_STAGGER,
+                ease: 'easeOut',
+                times: [0, 0.2, 0.5, 0.8, 1],
+                repeat: Infinity,
+                repeatDelay: CYCLE_DURATION - FLASH_DURATION,
+              }}
+            >
+              {char === ' ' ? ' ' : char}
+            </motion.span>
           </motion.span>
         ))}
         {/* ™ — appears right after the last letter */}
