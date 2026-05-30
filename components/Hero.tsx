@@ -5,19 +5,6 @@ import { useRef } from 'react';
 import { ArrowRight, Star } from 'lucide-react';
 import { BRAND } from '@/lib/constants';
 
-/**
- * Tiny sci-fi corner accent that hugs each corner of the logo —
- * tiny golden L-shape, like a targeting reticle.
- */
-function CornerAccent({ className = '' }: { className?: string }) {
-  return (
-    <span aria-hidden className={`pointer-events-none block h-4 w-4 ${className}`}>
-      <span className="absolute top-0 left-0 h-[2px] w-3 bg-gold/70" />
-      <span className="absolute top-0 left-0 h-3 w-[2px] bg-gold/70" />
-    </span>
-  );
-}
-
 export default function Hero() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
@@ -120,107 +107,23 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Right — futuristic animated logo */}
+        {/* Right — the animated SVG logo (its own internal motion) */}
         <motion.div
-          style={{ y, scale }}
+          style={{ y, scale, opacity }}
           className="relative z-10 lg:col-span-5"
         >
-          <div className="relative mx-auto aspect-square w-full max-w-md lg:max-w-none">
-            {/* Outer decorative concentric rings */}
-            <div className="absolute -inset-6 -z-10 rounded-full border border-gold/10" />
-            <div className="absolute -inset-14 -z-20 rounded-full border border-gold/5" />
-            <div className="absolute -inset-24 -z-30 rounded-full border border-gold/[0.03]" />
-
-            {/* Rotating conic gradient halo (gold sweep) */}
-            <motion.div
-              aria-hidden
-              className="absolute inset-[-15%] -z-10 rounded-full opacity-60"
-              style={{
-                background:
-                  'conic-gradient(from 0deg, transparent 0deg, transparent 200deg, rgba(212,175,55,0.55) 270deg, rgba(212,175,55,0.15) 320deg, transparent 360deg)',
-                filter: 'blur(28px)',
-                animation: 'spin 14s linear infinite',
-              }}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.4, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="relative mx-auto aspect-square w-full max-w-md lg:max-w-none"
+          >
+            <img
+              src="/logo.svg"
+              alt="Art By Creeda — luxury charcoal portrait studio"
+              className="h-full w-full object-contain"
             />
-
-            {/* Counter-rotating second halo (slightly faster, lighter) */}
-            <motion.div
-              aria-hidden
-              className="absolute inset-[-25%] -z-20 rounded-full opacity-40"
-              style={{
-                background:
-                  'conic-gradient(from 180deg, transparent 0deg, transparent 220deg, rgba(212,175,55,0.4) 280deg, transparent 360deg)',
-                filter: 'blur(50px)',
-                animation: 'spin 22s linear infinite reverse',
-              }}
-            />
-
-            {/* Static radial glow base */}
-            <div
-              className="absolute inset-[-10%] -z-10 rounded-full"
-              style={{
-                background:
-                  'radial-gradient(ellipse at center, rgba(212,175,55,0.20) 0%, transparent 65%)',
-                filter: 'blur(40px)',
-              }}
-            />
-
-            {/* Pulsing inner ring */}
-            <motion.div
-              aria-hidden
-              className="absolute inset-0 rounded-full border border-gold/30"
-              animate={{
-                scale: [1, 1.08, 1],
-                opacity: [0.4, 0.7, 0.4],
-              }}
-              transition={{
-                duration: 3.5,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            />
-
-            {/* The logo with float */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.85 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.4, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="relative h-full w-full"
-            >
-              <motion.img
-                src="/logo.png"
-                alt="Art By Creeda — luxury charcoal portrait studio"
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                className="relative h-full w-full object-contain drop-shadow-[0_0_40px_rgba(212,175,55,0.35)]"
-              />
-
-              {/* Scanning gold light bar — passes top to bottom */}
-              <motion.div
-                aria-hidden
-                className="pointer-events-none absolute inset-x-[10%] h-[2px] bg-gradient-to-r from-transparent via-gold/70 to-transparent"
-                style={{ filter: 'blur(1px)' }}
-                initial={{ top: '0%', opacity: 0 }}
-                animate={{
-                  top: ['0%', '100%'],
-                  opacity: [0, 1, 1, 0],
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                  repeatDelay: 2,
-                  times: [0, 0.1, 0.9, 1],
-                }}
-              />
-
-              {/* Corner accents — like sci-fi targeting reticle */}
-              <CornerAccent className="absolute -left-1 -top-1" />
-              <CornerAccent className="absolute -right-1 -top-1 rotate-90" />
-              <CornerAccent className="absolute -left-1 -bottom-1 -rotate-90" />
-              <CornerAccent className="absolute -right-1 -bottom-1 rotate-180" />
-            </motion.div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
 

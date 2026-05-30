@@ -25,7 +25,8 @@
       "mcp__577fc5a7-48c5-4b1b-a146-e24e48e0601b__get_deployment_build_logs",
       "mcp__577fc5a7-48c5-4b1b-a146-e24e48e0601b__get_runtime_logs",
       "mcp__577fc5a7-48c5-4b1b-a146-e24e48e0601b__get_deployment",
-      "PowerShell($tok = \"8536817944:AAHOBElF1cSL1lODb3ONBwgpKDB-QO5xzO4\"; $chat = \"8917894706\"; $body = @{ chat_id = $chat; parse_mode = \"HTML\"; text = \"🟢 <b>Pre-flight check passed.</b>`n`nartsbycreeda.com is live with the new /order flow.`nEnv vars: ✅ Postgres ✅ Paystack ✅ Admin`nReady for your test purchase.\" } | ConvertTo-Json; try { $r = Invoke-RestMethod -Uri \"https://api.telegram.org/bot$tok/sendMessage\" -Method POST -Body $body -ContentType \"application/json\" -TimeoutSec 15; if \\($r.ok\\) { \"✓ Test message delivered to your Telegram\" } } catch { \"Telegram error: $_\" })"
+      "PowerShell($tok = \"8536817944:AAHOBElF1cSL1lODb3ONBwgpKDB-QO5xzO4\"; $chat = \"8917894706\"; $body = @{ chat_id = $chat; parse_mode = \"HTML\"; text = \"🟢 <b>Pre-flight check passed.</b>`n`nartsbycreeda.com is live with the new /order flow.`nEnv vars: ✅ Postgres ✅ Paystack ✅ Admin`nReady for your test purchase.\" } | ConvertTo-Json; try { $r = Invoke-RestMethod -Uri \"https://api.telegram.org/bot$tok/sendMessage\" -Method POST -Body $body -ContentType \"application/json\" -TimeoutSec 15; if \\($r.ok\\) { \"✓ Test message delivered to your Telegram\" } } catch { \"Telegram error: $_\" })",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\USER PC\\\\Downloads\\\\logo.svg\" -Destination \"C:\\\\Users\\\\USER PC\\\\ArtByCreeda\\\\public\\\\logo.svg\" -Force; Get-Item \"C:\\\\Users\\\\USER PC\\\\ArtByCreeda\\\\public\\\\logo.svg\" | Select-Object Name, @{N='KB';E={[math]::Round\\($_.Length/1KB,1\\)}})"
     ]
   }
 }
