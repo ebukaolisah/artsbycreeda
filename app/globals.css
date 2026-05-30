@@ -2,6 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Service-card restoration preview: cross-fade between two source photos */
+@keyframes restoration-a {
+  0%, 45% { opacity: 0.30; }
+  55%, 95% { opacity: 0; }
+  100% { opacity: 0.30; }
+}
+@keyframes restoration-b {
+  0%, 45% { opacity: 0; }
+  55%, 95% { opacity: 0.30; }
+  100% { opacity: 0; }
+}
+.group:hover .restoration-a {
+  animation: restoration-a-hover 10s linear infinite;
+}
+.group:hover .restoration-b {
+  animation: restoration-b-hover 10s linear infinite;
+}
+@keyframes restoration-a-hover {
+  0%, 45% { opacity: 0.75; }
+  55%, 95% { opacity: 0; }
+  100% { opacity: 0.75; }
+}
+@keyframes restoration-b-hover {
+  0%, 45% { opacity: 0; }
+  55%, 95% { opacity: 0.75; }
+  100% { opacity: 0; }
+}
+
 :root {
   --charcoal: #0a0908;
   --ivory: #F5F2EC;

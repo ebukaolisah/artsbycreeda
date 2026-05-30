@@ -422,7 +422,7 @@ function StepService({
   const previews: Record<Style, string> = {
     charcoal: '/style-charcoal.png',
     urban: '/style-urban.png',
-    restoration: '/artworks/detailed-02.png',
+    restoration: '/style-restoration-1.png',
   };
   const glow: Record<Style, string> = {
     charcoal:
@@ -463,12 +463,32 @@ function StepService({
               />
               <div className="relative m-[2px] overflow-hidden rounded-[18px] bg-charcoal">
                 <div className="relative aspect-[4/5]">
-                  <img
-                    src={previews[s]}
-                    alt={meta.label}
-                    onError={(e) => ((e.currentTarget.style.display = 'none'))}
-                    className="absolute inset-0 h-full w-full object-cover opacity-30 transition-all duration-500 group-hover:scale-105 group-hover:opacity-75"
-                  />
+                  {s === 'restoration' ? (
+                    <>
+                      {/* Two stacked photos that cross-fade — perfect for "restoration" */}
+                      <img
+                        src="/style-restoration-1.png"
+                        alt={meta.label}
+                        onError={(e) => ((e.currentTarget.style.display = 'none'))}
+                        className="restoration-a absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        style={{ animation: 'restoration-a 10s linear infinite' }}
+                      />
+                      <img
+                        src="/style-restoration-2.png"
+                        alt=""
+                        onError={(e) => ((e.currentTarget.style.display = 'none'))}
+                        className="restoration-b absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        style={{ animation: 'restoration-b 10s linear infinite' }}
+                      />
+                    </>
+                  ) : (
+                    <img
+                      src={previews[s]}
+                      alt={meta.label}
+                      onError={(e) => ((e.currentTarget.style.display = 'none'))}
+                      className="absolute inset-0 h-full w-full object-cover opacity-30 transition-all duration-500 group-hover:scale-105 group-hover:opacity-75"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/60 to-charcoal/30" />
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-5">

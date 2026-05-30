@@ -33,14 +33,28 @@ export default function Navbar() {
                 : 'border-ivory/[0.06] bg-charcoal/40 backdrop-blur-xl'
             }`}
           >
-            {/* Logo */}
-            <a href="#top" className="group flex items-center gap-2.5 pl-1">
-              <span className="relative grid h-8 w-8 place-items-center overflow-hidden rounded-full border border-gold/40">
-                <span className="absolute inset-0 bg-gold-gradient opacity-70 transition-opacity group-hover:opacity-100" />
-                <span className="relative font-serif text-base font-semibold text-charcoal">C</span>
+            {/* Logo — ABC monogram + grand wordmark */}
+            <a href="#top" className="group flex items-center gap-3 pl-1">
+              {/* Monogram badge — italic serif ABC on gold gradient */}
+              <span className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-[10px] border border-gold/50 shadow-[0_4px_18px_-6px_rgba(212,175,55,0.55)] md:h-11 md:w-11">
+                <span className="absolute inset-0 bg-gold-gradient opacity-90 transition-opacity group-hover:opacity-100" />
+                <span className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-charcoal/20" />
+                <span
+                  className="relative font-serif text-[13px] italic font-semibold tracking-[0.04em] text-charcoal md:text-[14px]"
+                  style={{ textShadow: '0 1px 0 rgba(255,255,255,0.35)' }}
+                >
+                  AbC
+                </span>
               </span>
-              <span className="font-serif text-[17px] tracking-tight text-ivory md:text-lg">
-                {BRAND.name}
+
+              {/* Wordmark stack — grander serif + tracked tagline */}
+              <span className="flex flex-col leading-none">
+                <span className="font-serif text-[20px] font-light italic tracking-[0.005em] text-ivory md:text-[22px]">
+                  ArtsByCreeda
+                </span>
+                <span className="mt-1.5 hidden font-sans text-[8.5px] uppercase tracking-[0.42em] text-ivory/45 md:block">
+                  Studio · Lagos
+                </span>
               </span>
             </a>
 

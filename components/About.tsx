@@ -102,7 +102,7 @@ export default function About() {
             <p>
               I specialise in hyper-realistic, museum-quality pencil-style
               portraits that feel personal, powerful, and perfect for any space.
-              From Afrobeats tributes to Igbo heritage pieces to anniversary
+              From Afrobeats tributes to cultural heritage pieces to anniversary
               couples &mdash; every commission is treated as a sacred study.
             </p>
           </div>

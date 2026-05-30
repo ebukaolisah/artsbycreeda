@@ -27,7 +27,9 @@ export const metadata: Metadata = {
     'pencil portrait',
     'ArtsByCreeda',
     'digital portrait',
-    'Igbo art',
+    'photo restoration',
+    'urban art',
+    'African art',
   ],
   authors: [{ name: 'Creeda' }],
   openGraph: {
