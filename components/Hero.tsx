@@ -4,9 +4,19 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { ArrowRight, Star } from 'lucide-react';
 import { BRAND } from '@/lib/constants';
-import { FEATURED } from '@/lib/artworks';
 
-const HERO_IMAGE = FEATURED[0]?.src ?? '/artworks/regal-01.png';
+/**
+ * Tiny sci-fi corner accent that hugs each corner of the logo —
+ * tiny golden L-shape, like a targeting reticle.
+ */
+function CornerAccent({ className = '' }: { className?: string }) {
+  return (
+    <span aria-hidden className={`pointer-events-none block h-4 w-4 ${className}`}>
+      <span className="absolute top-0 left-0 h-[2px] w-3 bg-gold/70" />
+      <span className="absolute top-0 left-0 h-3 w-[2px] bg-gold/70" />
+    </span>
+  );
+}
 
 export default function Hero() {
   const ref = useRef<HTMLDivElement>(null);
@@ -110,53 +120,105 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Right — portrait */}
+        {/* Right — futuristic animated logo */}
         <motion.div
           style={{ y, scale }}
           className="relative z-10 lg:col-span-5"
         >
-          <div className="relative mx-auto aspect-[4/5] w-full max-w-md lg:max-w-none">
-            {/* Decorative ring */}
-            <div className="absolute -inset-6 -z-10 rounded-[2rem] border border-gold/10" />
-            <div className="absolute -inset-12 -z-20 rounded-[2.5rem] border border-gold/5" />
+          <div className="relative mx-auto aspect-square w-full max-w-md lg:max-w-none">
+            {/* Outer decorative concentric rings */}
+            <div className="absolute -inset-6 -z-10 rounded-full border border-gold/10" />
+            <div className="absolute -inset-14 -z-20 rounded-full border border-gold/5" />
+            <div className="absolute -inset-24 -z-30 rounded-full border border-gold/[0.03]" />
 
+            {/* Rotating conic gradient halo (gold sweep) */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
+              aria-hidden
+              className="absolute inset-[-15%] -z-10 rounded-full opacity-60"
+              style={{
+                background:
+                  'conic-gradient(from 0deg, transparent 0deg, transparent 200deg, rgba(212,175,55,0.55) 270deg, rgba(212,175,55,0.15) 320deg, transparent 360deg)',
+                filter: 'blur(28px)',
+                animation: 'spin 14s linear infinite',
+              }}
+            />
+
+            {/* Counter-rotating second halo (slightly faster, lighter) */}
+            <motion.div
+              aria-hidden
+              className="absolute inset-[-25%] -z-20 rounded-full opacity-40"
+              style={{
+                background:
+                  'conic-gradient(from 180deg, transparent 0deg, transparent 220deg, rgba(212,175,55,0.4) 280deg, transparent 360deg)',
+                filter: 'blur(50px)',
+                animation: 'spin 22s linear infinite reverse',
+              }}
+            />
+
+            {/* Static radial glow base */}
+            <div
+              className="absolute inset-[-10%] -z-10 rounded-full"
+              style={{
+                background:
+                  'radial-gradient(ellipse at center, rgba(212,175,55,0.20) 0%, transparent 65%)',
+                filter: 'blur(40px)',
+              }}
+            />
+
+            {/* Pulsing inner ring */}
+            <motion.div
+              aria-hidden
+              className="absolute inset-0 rounded-full border border-gold/30"
+              animate={{
+                scale: [1, 1.08, 1],
+                opacity: [0.4, 0.7, 0.4],
+              }}
+              transition={{
+                duration: 3.5,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+
+            {/* The logo with float */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.2, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="relative h-full w-full overflow-hidden rounded-[1.5rem] border border-ivory/10 shadow-[0_30px_120px_-30px_rgba(0,0,0,0.8)]"
+              transition={{ duration: 1.4, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="relative h-full w-full"
             >
               <motion.img
-                src={HERO_IMAGE}
-                alt="Featured charcoal portrait"
-                className="h-full w-full object-cover"
-                initial={{ scale: 1.15 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 8, ease: 'easeOut' }}
+                src="/logo.png"
+                alt="Art By Creeda — luxury charcoal portrait studio"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                className="relative h-full w-full object-contain drop-shadow-[0_0_40px_rgba(212,175,55,0.35)]"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-charcoal/40 via-transparent to-transparent" />
 
-              {/* Floating caption card */}
+              {/* Scanning gold light bar — passes top to bottom */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1.2 }}
-                className="absolute bottom-6 left-6 right-6 rounded-2xl border border-ivory/10 bg-charcoal/60 p-4 backdrop-blur-xl"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="font-serif text-xl italic text-ivory">
-                      {FEATURED[0]?.title ?? 'The Sovereign'}
-                    </div>
-                    <div className="mt-0.5 font-sans text-[10px] uppercase tracking-widest text-ivory/50">
-                      Digital Charcoal · 2025
-                    </div>
-                  </div>
-                  <div className="h-10 w-10 rounded-full border border-gold/30 grid place-items-center">
-                    <span className="font-serif text-gold">✦</span>
-                  </div>
-                </div>
-              </motion.div>
+                aria-hidden
+                className="pointer-events-none absolute inset-x-[10%] h-[2px] bg-gradient-to-r from-transparent via-gold/70 to-transparent"
+                style={{ filter: 'blur(1px)' }}
+                initial={{ top: '0%', opacity: 0 }}
+                animate={{
+                  top: ['0%', '100%'],
+                  opacity: [0, 1, 1, 0],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  repeatDelay: 2,
+                  times: [0, 0.1, 0.9, 1],
+                }}
+              />
+
+              {/* Corner accents — like sci-fi targeting reticle */}
+              <CornerAccent className="absolute -left-1 -top-1" />
+              <CornerAccent className="absolute -right-1 -top-1 rotate-90" />
+              <CornerAccent className="absolute -left-1 -bottom-1 -rotate-90" />
+              <CornerAccent className="absolute -right-1 -bottom-1 rotate-180" />
             </motion.div>
           </div>
         </motion.div>
@@ -169,7 +231,7 @@ export default function Hero() {
             <div key={i} className="flex shrink-0 items-center gap-12 pr-12 font-serif text-2xl italic text-ivory/30 md:text-3xl">
               <span>Regal Portraiture</span>
               <span className="text-gold/40">✦</span>
-              <span>Igbo Heritage</span>
+              <span>Cultural Heritage</span>
               <span className="text-gold/40">✦</span>
               <span>Celebrity Tributes</span>
               <span className="text-gold/40">✦</span>

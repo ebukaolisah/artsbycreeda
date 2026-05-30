@@ -48,6 +48,8 @@ interface Props {
   accent?: 'gold' | 'neon';
   /** Right-side grid columns. Defaults to auto based on piece count. */
   gridCols?: 2 | 3 | 4 | 5;
+  /** Show the title/category meta strip below the hero. Default true. */
+  showHeroMeta?: boolean;
 }
 
 export default function StructuredShowcase({
@@ -59,6 +61,7 @@ export default function StructuredShowcase({
   latestLabel = 'Latest Work',
   accent = 'gold',
   gridCols,
+  showHeroMeta = true,
 }: Props) {
   // Auto-pick a grid density that minimises empty cells
   const others_count = pieces.length - 1;
@@ -225,18 +228,20 @@ export default function StructuredShowcase({
               </div>
             </div>
 
-            {/* Hero meta strip (below the image) */}
-            <div className="mt-4 flex items-baseline justify-between gap-4 px-1">
-              <div>
-                <div className="font-serif text-2xl italic text-ivory md:text-3xl">
-                  {hero.title}
-                </div>
-                <div className="mt-1 font-sans text-[10px] uppercase tracking-widest text-ivory/40">
-                  {hero.category}
-                  {hero.year ? ` · ${hero.year}` : ''}
+            {/* Hero meta strip (below the image) — hidden when showHeroMeta=false */}
+            {showHeroMeta && (
+              <div className="mt-4 flex items-baseline justify-between gap-4 px-1">
+                <div>
+                  <div className="font-serif text-2xl italic text-ivory md:text-3xl">
+                    {hero.title}
+                  </div>
+                  <div className="mt-1 font-sans text-[10px] uppercase tracking-widest text-ivory/40">
+                    {hero.category}
+                    {hero.year ? ` · ${hero.year}` : ''}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </motion.div>
 
           {/* RIGHT — Latest Work grid — wider column to host more cards comfortably */}

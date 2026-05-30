@@ -146,6 +146,7 @@ export default function WildSide() {
       latestLabel="The Wild Collection"
       accent="neon"
       gridCols={5}
+      showHeroMeta={false}
     />
   );
 }
