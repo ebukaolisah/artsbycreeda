@@ -107,7 +107,7 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Right — the animated SVG logo (its own internal motion) */}
+        {/* Right — the animated SVG logo (loaded via <object> so its internal scripts/animations run) */}
         <motion.div
           style={{ y, scale, opacity }}
           className="relative z-10 lg:col-span-5"
@@ -118,11 +118,17 @@ export default function Hero() {
             transition={{ duration: 1.4, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="relative mx-auto aspect-square w-full max-w-md lg:max-w-none"
           >
-            <img
-              src="/logo.svg"
-              alt="Art By Creeda — luxury charcoal portrait studio"
-              className="h-full w-full object-contain"
-            />
+            <object
+              data="/logo.svg"
+              type="image/svg+xml"
+              aria-label="Art By Creeda — luxury charcoal portrait studio"
+              className="pointer-events-none h-full w-full"
+            >
+              {/* Fallback if SVG can't load at all */}
+              <span className="grid h-full w-full place-items-center font-serif text-3xl italic text-gold">
+                Art By Creeda
+              </span>
+            </object>
           </motion.div>
         </motion.div>
       </div>
