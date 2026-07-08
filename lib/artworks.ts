@@ -9,126 +9,120 @@ export type ArtworkCategory =
 
 export interface Artwork {
   id: string;
-  /** Grand, short, evocative — never literal */
   title: string;
   src: string;
-  /** Short single-word style tag shown at top-left of card */
+  alt: string;
   category: ArtworkCategory;
   year: number;
   medium: string;
-  /** One-line grand writeup shown in lightbox */
   description: string;
   featured?: boolean;
 }
 
-/**
- * Ten pieces — the studio's headline collection.
- * Captures the African Giant era from Asake to Wizkid plus the legacy & mogul portraits.
- */
 export const ARTWORKS: Artwork[] = [
   {
     id: 'african-giant',
     title: 'The African Giant',
-    src: '/artworks/burna-01.png',
+    src: '/artworks/custom-charcoal-portrait-burna-boy-african-giant.png',
+    alt: 'Custom charcoal portrait from photo by Arts By Creeda',
     category: 'Crowned',
     year: 2025,
     medium: 'Digital Charcoal',
-    description:
-      'Self-coronated, world-corroborated. The genre flexes around him.',
+    description: 'A celebrity-style charcoal portrait study with dramatic contrast and premium dark pencil texture.',
     featured: true,
   },
   {
     id: 'obo',
     title: 'OBO',
-    src: '/artworks/davido-01.png',
+    src: '/artworks/custom-charcoal-portrait-davido-obo.png',
+    alt: 'Realistic digital charcoal portrait artwork from customer-style photo',
     category: 'Anthem',
     year: 2025,
     medium: 'Digital Charcoal',
-    description:
-      'Omo Baba Olowo. The fire, the family, and the anthem — set in graphite.',
+    description: 'A polished charcoal portrait study with confident likeness and collector-grade tonal range.',
     featured: true,
   },
   {
     id: 'asake',
     title: 'Asake',
-    src: '/artworks/asake.png',
+    src: '/artworks/digital-charcoal-portrait-asake.png',
+    alt: 'Premium digital charcoal portrait with luxury dark pencil finish',
     category: 'Mr Money',
     year: 2025,
     medium: 'Digital Charcoal',
-    description:
-      'Lagos summer in a single frame. The genre rearranged itself around him.',
+    description: 'A bold digital charcoal portrait study created for strong facial presence and wall-ready impact.',
   },
   {
     id: 'last-last',
     title: 'Last Last',
-    src: '/artworks/burna-02.png',
+    src: '/artworks/realistic-charcoal-portrait-burna-boy-last-last.png',
+    alt: 'Realistic charcoal portrait from photo with expressive face detail',
     category: 'Anthem',
     year: 2025,
     medium: 'Digital Charcoal',
-    description:
-      'Heartbreak rendered as a hymn. Every stroke knows what it cost.',
+    description: 'A moody portrait study focused on emotion, shadow control, and fine facial detail.',
   },
   {
     id: 'twice-as-tall',
     title: 'Twice as Tall',
-    src: '/artworks/burna-03.png',
+    src: '/artworks/luxury-charcoal-portrait-burna-boy-twice-as-tall.png',
+    alt: 'Luxury digital charcoal portrait art for printable wall display',
     category: 'Crowned',
     year: 2025,
     medium: 'Digital Charcoal',
-    description:
-      'Grammy-shaped silhouette. The continent fits inside the frame.',
+    description: 'A luxury portrait art study with high contrast and a gallery-style charcoal finish.',
   },
   {
     id: 'thirty-bg',
     title: '30 Billion Gang',
-    src: '/artworks/davido-02.png',
+    src: '/artworks/custom-charcoal-portrait-davido-30-billion-gang.png',
+    alt: 'Celebrity-style custom charcoal portrait artwork by Arts By Creeda',
     category: 'Anthem',
     year: 2025,
     medium: 'Digital Charcoal',
-    description:
-      'Anthems for a generation that refuses to bow. Pencil with the bass turned up.',
+    description: 'A portrait study created for bold personality, rich dark values, and premium printable artwork.',
   },
   {
     id: 'patriarch',
     title: 'The Patriarch',
-    src: '/artworks/chief-patrick.png',
+    src: '/artworks/legacy-family-charcoal-portrait-chief-patrick.png',
+    alt: 'Realistic family charcoal portrait artwork from customer photo',
     category: 'Legacy',
     year: 2025,
     medium: 'Digital Charcoal',
-    description:
-      'Wisdom you can feel through the pencil — every line carries a decade.',
+    description: 'A legacy-style family portrait study with quiet dignity and strong facial detail.',
   },
   {
     id: 'madam-mogul',
     title: 'Madam Mogul',
-    src: '/artworks/faith-ojo.png',
+    src: '/artworks/premium-digital-charcoal-portrait-faith-ojo.png',
+    alt: 'Premium digital charcoal portrait for luxury portrait gift',
     category: 'Mogul',
     year: 2025,
     medium: 'Digital Charcoal',
-    description:
-      'Producer. Patron. Pillar. Three lifetimes in one composed gaze.',
+    description: 'A refined digital portrait study designed for confidence, elegance, and print-ready presentation.',
   },
   {
     id: 'kingmaker',
     title: 'The Kingmaker',
-    src: '/artworks/tunde-ednut.png',
+    src: '/artworks/celebrity-style-charcoal-portrait-tunde-ednut.png',
+    alt: 'Celebrity-style charcoal portrait artwork with realistic face detail',
     category: 'Mogul',
     year: 2025,
     medium: 'Digital Charcoal',
-    description:
-      'Behind every breakout star — a man with the microphone and the instinct.',
+    description: 'A dark pencil portrait study with public-figure styling and premium tonal depth.',
   },
   {
     id: 'starboy',
     title: 'Starboy',
-    src: '/artworks/wizkid.png',
+    src: '/artworks/realistic-charcoal-portrait-wizkid-starboy.png',
+    alt: 'Realistic charcoal portrait gift artwork from photo',
     category: 'Starboy',
     year: 2025,
     medium: 'Digital Charcoal',
-    description:
-      'From Surulere to Madison Square — Made in Lagos, drawn in light.',
+    description: 'A smooth celebrity-style portrait study with soft graphite values and luxury wall-art energy.',
     featured: true,
   },
 ];
 
-export const FEATURED = ARTWORKS.filter((a) => a.featured);
+export const FEATURED = ARTWORKS.filter((artwork) => artwork.featured);

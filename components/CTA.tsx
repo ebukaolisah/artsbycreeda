@@ -13,7 +13,7 @@ export default function CTA() {
       {/* Background hero portrait, faded */}
       <div className="absolute inset-0 opacity-20">
         <img
-          src="/artworks/regal-03.png"
+          src="/artworks/legacy-family-charcoal-portrait-chief-patrick.png"
           alt=""
           aria-hidden
           className="h-full w-full object-cover"
@@ -55,6 +55,7 @@ export default function CTA() {
           >
             <a
               href={BRAND.orderPath}
+              data-track="order_click"
               className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full bg-gold px-10 py-5 font-sans text-sm font-medium uppercase tracking-widest text-charcoal shadow-[0_0_60px_-10px_rgba(212,175,55,0.5)] transition-all duration-500 hover:bg-teal hover:shadow-[0_0_80px_-10px_rgba(68,225,216,0.6)]"
             >
               <span className="relative">Order Yours</span>

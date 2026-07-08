@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Moon, Sun, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Menu, MessageCircle, X } from 'lucide-react';
 import { BRAND, NAV_LINKS } from '@/lib/constants';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -33,9 +32,7 @@ export default function Navbar() {
                 : 'border-ivory/[0.06] bg-charcoal/40 backdrop-blur-xl'
             }`}
           >
-            {/* Logo — ABC monogram + grand wordmark */}
-            <a href="#top" className="group flex items-center gap-3 pl-1">
-              {/* Monogram badge — italic serif ABC on gold gradient */}
+            <a href="/" className="group flex items-center gap-3 pl-1" aria-label="Arts By Creeda home">
               <span className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-[10px] border border-gold/50 shadow-[0_4px_18px_-6px_rgba(212,175,55,0.55)] md:h-11 md:w-11">
                 <span className="absolute inset-0 bg-gold-gradient opacity-90 transition-opacity group-hover:opacity-100" />
                 <span className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-charcoal/20" />
@@ -47,19 +44,17 @@ export default function Navbar() {
                 </span>
               </span>
 
-              {/* Wordmark stack — grander serif + tracked tagline */}
               <span className="flex flex-col leading-none">
                 <span className="font-serif text-[20px] font-light italic tracking-[0.005em] text-ivory md:text-[22px]">
                   ArtsByCreeda
                 </span>
                 <span className="mt-1.5 hidden font-sans text-[8.5px] uppercase tracking-[0.42em] text-ivory/45 md:block">
-                  Studio · Lagos
+                  Studio / Lagos
                 </span>
               </span>
             </a>
 
-            {/* Center nav */}
-            <nav className="hidden items-center gap-0.5 md:flex">
+            <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Primary navigation">
               {NAV_LINKS.map((link) => (
                 <a
                   key={link.href}
@@ -71,43 +66,19 @@ export default function Navbar() {
               ))}
             </nav>
 
-            {/* Right cluster: theme toggle + Order CTA */}
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                aria-label="Toggle theme"
-                title="Theme (decorative)"
-                className="relative grid h-9 w-9 place-items-center rounded-full border border-ivory/10 bg-ivory/[0.03] text-ivory/70 transition-colors hover:border-gold/40 hover:text-gold"
+              <a
+                href={BRAND.whatsappUrl}
+                data-track="whatsapp_click"
+                className="hidden h-9 w-9 place-items-center rounded-full border border-ivory/10 bg-ivory/[0.03] text-ivory/70 transition-colors hover:border-gold/40 hover:text-gold md:grid"
+                aria-label="Start portrait order on WhatsApp"
               >
-                <AnimatePresence mode="wait" initial={false}>
-                  {theme === 'dark' ? (
-                    <motion.span
-                      key="moon"
-                      initial={{ rotate: -90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: 90, opacity: 0 }}
-                      transition={{ duration: 0.25 }}
-                      className="absolute inset-0 grid place-items-center"
-                    >
-                      <Moon size={14} strokeWidth={1.5} />
-                    </motion.span>
-                  ) : (
-                    <motion.span
-                      key="sun"
-                      initial={{ rotate: 90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: -90, opacity: 0 }}
-                      transition={{ duration: 0.25 }}
-                      className="absolute inset-0 grid place-items-center"
-                    >
-                      <Sun size={14} strokeWidth={1.5} />
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </button>
+                <MessageCircle size={15} strokeWidth={1.7} />
+              </a>
 
               <a
                 href={BRAND.orderPath}
+                data-track="order_click"
                 className="group hidden items-center gap-1.5 rounded-full bg-gold px-4 py-2 font-sans text-[11px] font-medium uppercase tracking-widest text-charcoal transition-all duration-300 hover:bg-teal md:inline-flex"
               >
                 <span>Order</span>
@@ -117,11 +88,10 @@ export default function Navbar() {
                 />
               </a>
 
-              {/* Mobile hamburger */}
               <button
                 aria-label="Open menu"
                 onClick={() => setOpen(true)}
-                className="grid h-9 w-9 place-items-center rounded-full border border-ivory/10 bg-ivory/[0.03] text-ivory/80 md:hidden"
+                className="grid h-9 w-9 place-items-center rounded-full border border-ivory/10 bg-ivory/[0.03] text-ivory/80 lg:hidden"
               >
                 <Menu size={15} />
               </button>
@@ -130,7 +100,6 @@ export default function Navbar() {
         </div>
       </motion.header>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -138,10 +107,12 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[100] flex flex-col bg-charcoal/95 backdrop-blur-2xl md:hidden"
+            className="fixed inset-0 z-[100] flex flex-col bg-charcoal/95 backdrop-blur-2xl lg:hidden"
           >
             <div className="container-art flex h-20 items-center justify-between">
-              <span className="font-serif text-xl text-ivory">{BRAND.name}</span>
+              <a href="/" className="font-serif text-xl text-ivory" onClick={() => setOpen(false)}>
+                {BRAND.name}
+              </a>
               <button
                 aria-label="Close menu"
                 onClick={() => setOpen(false)}
@@ -150,7 +121,7 @@ export default function Navbar() {
                 <X size={18} />
               </button>
             </div>
-            <div className="container-art flex flex-1 flex-col justify-center gap-2">
+            <nav className="container-art flex flex-1 flex-col justify-center gap-2" aria-label="Mobile navigation">
               {NAV_LINKS.map((link, i) => (
                 <motion.a
                   key={link.href}
@@ -159,22 +130,35 @@ export default function Navbar() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 + i * 0.05 }}
-                  className="block py-3 font-serif text-5xl font-light text-ivory hover:text-gold"
+                  className="block py-3 font-serif text-4xl font-light text-ivory hover:text-gold sm:text-5xl"
                 >
                   {link.label}
                 </motion.a>
               ))}
-              <motion.a
-                href={BRAND.orderPath}
-                onClick={() => setOpen(false)}
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="btn-primary mt-8 self-start"
+                className="mt-8 flex flex-wrap gap-3"
               >
-                Order Yours
-              </motion.a>
-            </div>
+                <a
+                  href={BRAND.orderPath}
+                  data-track="order_click"
+                  onClick={() => setOpen(false)}
+                  className="btn-primary"
+                >
+                  Order Your Portrait
+                </a>
+                <a
+                  href={BRAND.whatsappUrl}
+                  data-track="whatsapp_click"
+                  onClick={() => setOpen(false)}
+                  className="btn-outline"
+                >
+                  WhatsApp
+                </a>
+              </motion.div>
+            </nav>
           </motion.div>
         )}
       </AnimatePresence>

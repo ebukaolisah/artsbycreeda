@@ -1,5 +1,14 @@
 import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 import { Cormorant_Garamond, Montserrat } from 'next/font/google';
+import AnalyticsPlaceholders from '@/components/AnalyticsPlaceholders';
+import SEOJsonLd from '@/components/SEOJsonLd';
+import {
+  createSeoMetadata,
+  organizationSchema,
+  professionalServiceSchema,
+  websiteSchema,
+} from '@/lib/seo';
 import './globals.css';
 
 const cormorant = Cormorant_Garamond({
@@ -16,33 +25,28 @@ const montserrat = Montserrat({
   display: 'swap',
 });
 
-export const metadata: Metadata = {
-  title: 'ArtsByCreeda — Museum-Quality Charcoal Portraits',
+export const metadata: Metadata = createSeoMetadata({
+  title: 'Arts By Creeda | Custom Digital Charcoal Portraits From Photo',
   description:
-    'Hyper-realistic, soul-stirring charcoal portraits delivered in 24–48 hours. Custom-crafted by Creeda — over 25 years of artistic mastery.',
+    'Order premium custom digital charcoal portraits from your photos. Arts By Creeda creates realistic print-ready portrait artwork for gifts, memorials, families, couples, and collectors.',
+  path: '/',
+  image: '/artworks/custom-charcoal-portrait-burna-boy-african-giant.png',
   keywords: [
-    'charcoal portrait',
-    'custom portrait',
-    'commissioned art',
-    'pencil portrait',
-    'ArtsByCreeda',
-    'digital portrait',
-    'photo restoration',
-    'urban art',
-    'African art',
+    'custom charcoal portrait from photo',
+    'digital charcoal portrait',
+    'charcoal portrait gift',
+    'luxury portrait gift',
+    'portrait from photo',
+    'custom portrait artist Lagos',
   ],
-  authors: [{ name: 'Creeda' }],
-  openGraph: {
-    title: 'ArtsByCreeda — Where Art Meets Soul',
-    description: 'Museum-quality digital charcoal portraits, delivered in 24–48 hours.',
-    type: 'website',
-  },
-};
+});
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${cormorant.variable} ${montserrat.variable}`}>
       <body className="bg-charcoal text-ivory antialiased selection:bg-gold selection:text-charcoal">
+        <SEOJsonLd data={[organizationSchema(), websiteSchema(), professionalServiceSchema()]} />
+        <AnalyticsPlaceholders />
         <div className="pointer-events-none fixed inset-0 z-[60] bg-noise opacity-[0.03] mix-blend-overlay" />
         {children}
       </body>

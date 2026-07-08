@@ -52,7 +52,7 @@ export default function About() {
               alt="Creeda — the artist behind ArtsByCreeda"
               onError={(e) => {
                 // Soft fallback until the photo is dropped into /public
-                (e.currentTarget as HTMLImageElement).src = '/artworks/detailed-01.png';
+                (e.currentTarget as HTMLImageElement).src = '/artworks/charcoal-pencil-portrait-detail-study.png';
               }}
               className="h-full w-full object-cover grayscale-[10%] transition-all duration-700 group-hover:grayscale-0 group-hover:scale-[1.03]"
             />
@@ -126,7 +126,7 @@ export default function About() {
           </div>
 
           <div className="mt-12">
-            <a href={BRAND.orderPath} className="btn-primary">
+            <a href={BRAND.orderPath} data-track="order_click" className="btn-primary">
               Order Yours
             </a>
           </div>

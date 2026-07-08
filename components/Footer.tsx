@@ -1,9 +1,8 @@
 'use client';
 
-import { Instagram, Facebook } from 'lucide-react';
-import { BRAND, NAV_LINKS } from '@/lib/constants';
+import { Facebook, Instagram, Mail, MessageCircle } from 'lucide-react';
+import { BRAND, FUNNEL_LINKS, GIFT_LINKS, MAIN_SERVICE_LINKS } from '@/lib/constants';
 
-// TikTok icon (lucide doesn't have one matching the brand mark; use a small inline svg)
 function TikTokIcon({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -12,7 +11,6 @@ function TikTokIcon({ size = 18 }: { size?: number }) {
   );
 }
 
-// X (formerly Twitter) — official mark
 function XIcon({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -30,63 +28,59 @@ const SOCIALS = [
 
 export default function Footer() {
   return (
-    <footer className="relative border-t border-ivory/5 bg-charcoal pt-24 pb-12">
+    <footer className="relative border-t border-ivory/5 bg-charcoal pb-24 pt-20 md:pb-12">
       <div className="container-art">
-        {/* Big wordmark */}
         <div className="text-center">
           <div className="font-serif text-[clamp(4rem,16vw,14rem)] font-light leading-none tracking-tightest text-ivory/[0.07]">
             ArtsByCreeda
           </div>
         </div>
 
-        <div className="mt-16 grid grid-cols-2 gap-8 border-t border-ivory/10 pt-12 md:grid-cols-4">
-          <div className="col-span-2 md:col-span-1">
+        <div className="mt-16 grid grid-cols-1 gap-10 border-t border-ivory/10 pt-12 md:grid-cols-2 xl:grid-cols-5">
+          <div className="xl:col-span-1">
             <div className="font-serif text-2xl text-ivory">{BRAND.name}</div>
             <p className="mt-3 font-sans text-sm font-light leading-relaxed text-ivory/60">
               {BRAND.description}
             </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a href={BRAND.orderPath} data-track="order_click" className="btn-primary !px-5 !py-3 !text-[10px]">
+                Order
+              </a>
+              <a href={BRAND.whatsappUrl} data-track="whatsapp_click" className="btn-outline !px-5 !py-3 !text-[10px]">
+                WhatsApp
+              </a>
+            </div>
           </div>
 
-          <div>
-            <div className="eyebrow">Explore</div>
-            <ul className="mt-4 space-y-2">
-              {NAV_LINKS.map((l) => (
-                <li key={l.href}>
-                  <a
-                    href={l.href}
-                    className="font-sans text-sm text-ivory/70 transition-colors hover:text-gold"
-                  >
-                    {l.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <FooterList title="Services" links={MAIN_SERVICE_LINKS} />
+          <FooterList title="Gift categories" links={GIFT_LINKS} />
+          <FooterList title="Explore" links={FUNNEL_LINKS} />
 
           <div>
             <div className="eyebrow">Contact</div>
-            <ul className="mt-4 space-y-2 font-sans text-sm">
+            <ul className="mt-4 space-y-3 font-sans text-sm">
               <li>
                 <a
                   href={`mailto:${BRAND.email}`}
-                  className="text-ivory/70 transition-colors hover:text-gold"
+                  className="inline-flex items-center gap-2 text-ivory/70 transition-colors hover:text-gold"
                 >
+                  <Mail size={14} aria-hidden />
                   {BRAND.email}
                 </a>
               </li>
               <li>
                 <a
-                  href={BRAND.orderPath}
-                  className="text-ivory/70 transition-colors hover:text-gold"
+                  href={BRAND.whatsappUrl}
+                  data-track="whatsapp_click"
+                  className="inline-flex items-center gap-2 text-ivory/70 transition-colors hover:text-gold"
                 >
-                  Start an order
+                  <MessageCircle size={14} aria-hidden />
+                  Start on WhatsApp
                 </a>
               </li>
             </ul>
-          </div>
 
-          <div>
-            <div className="eyebrow">Follow</div>
+            <div className="eyebrow mt-8">Follow</div>
             <div className="mt-4 flex gap-3">
               {SOCIALS.map(({ label, href, Icon }) => (
                 <a
@@ -95,25 +89,46 @@ export default function Footer() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={label}
-                  className="group grid h-10 w-10 place-items-center rounded-full border border-ivory/10 text-ivory/70 transition-all duration-500 hover:border-gold hover:text-gold hover:scale-110"
+                  className="group grid h-10 w-10 place-items-center rounded-full border border-ivory/10 text-ivory/70 transition-all duration-500 hover:scale-110 hover:border-gold hover:text-gold"
                 >
                   <Icon size={16} />
                 </a>
               ))}
             </div>
-            <p className="mt-4 font-sans text-xs text-ivory/40">{BRAND.handle}</p>
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-ivory/10 pt-8 font-sans text-xs text-ivory/40 md:flex-row">
-          <div>© {new Date().getFullYear()} {BRAND.name}. All rights reserved.</div>
-          <div className="flex items-center gap-2">
-            <span>Crafted with</span>
-            <span className="text-gold">✦</span>
-            <span>and a lot of pencil dust.</span>
-          </div>
+        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-ivory/10 pt-8 font-sans text-xs text-ivory/40 md:flex-row">
+          <div>&copy; {new Date().getFullYear()} {BRAND.name}. All rights reserved.</div>
+          <div>{BRAND.location.city}, {BRAND.location.country} / Worldwide digital delivery</div>
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterList({
+  title,
+  links,
+}: {
+  title: string;
+  links: ReadonlyArray<{ label: string; href: string }>;
+}) {
+  return (
+    <div>
+      <div className="eyebrow">{title}</div>
+      <ul className="mt-4 space-y-2">
+        {links.map((link) => (
+          <li key={link.href}>
+            <a
+              href={link.href}
+              className="font-sans text-sm leading-relaxed text-ivory/70 transition-colors hover:text-gold"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

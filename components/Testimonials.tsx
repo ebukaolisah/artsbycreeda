@@ -3,85 +3,48 @@
 import { motion } from 'framer-motion';
 import { Quote } from 'lucide-react';
 
-const TESTIMONIALS = [
-  {
-    quote:
-      "I cried when I opened the file. It looked like she was about to step out of the frame.",
-    name: 'Ifeoma A.',
-    role: 'Anniversary commission',
-  },
-  {
-    quote:
-      'Better than any framed print I have ever owned — and I have owned a lot. Worth every cent.',
-    name: 'Marcus T.',
-    role: 'Statement Edition (36×26)',
-  },
-  {
-    quote:
-      "I sent a phone photo. What came back belonged on a museum wall.",
-    name: 'Chioma O.',
-    role: 'Igbo Heritage portrait',
-  },
-  {
-    quote:
-      'The turnaround was faster than my last food delivery. The quality embarrasses studios I have paid 5×.',
-    name: 'David K.',
-    role: 'Tribute commission',
-  },
-  {
-    quote: 'Creeda captured my late father in a way no photograph ever did.',
-    name: 'Sade B.',
-    role: 'Memorial commission',
-  },
-  {
-    quote:
-      "Hands down the most thoughtful gift I've ever given. My wife still talks about it.",
-    name: 'Tunde A.',
-    role: 'Couples portrait',
-  },
+const PLACEHOLDERS = [
+  'Client portrait story',
+  'Memorial portrait note',
+  'Anniversary gift reaction',
 ];
 
 export default function Testimonials() {
-  // Duplicate for seamless marquee
-  const loop = [...TESTIMONIALS, ...TESTIMONIALS];
-
   return (
     <section className="relative overflow-hidden bg-charcoal py-32">
       <div className="container-art">
         <div className="mx-auto max-w-2xl text-center">
           <div className="inline-flex items-center gap-3">
             <span className="h-px w-10 bg-gold" />
-            <span className="eyebrow">Words from the Wall</span>
+            <span className="eyebrow">Client Notes</span>
             <span className="h-px w-10 bg-gold" />
           </div>
           <h2 className="display-text mt-6 text-5xl md:text-6xl lg:text-7xl">
-            Glowing <span className="italic gold-text">praise</span>,
-            <br />
-            from our collectors.
+            Real words belong <span className="italic gold-text">here</span>.
           </h2>
+          <p className="mx-auto mt-6 max-w-xl font-sans text-sm leading-relaxed text-ivory/60 md:text-base">
+            Add verified customer messages, screenshots, or short stories here when you have permission to publish them.
+          </p>
         </div>
-      </div>
 
-      <div className="relative mt-20">
-        {/* Side fades */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-32 bg-gradient-to-r from-charcoal to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-32 bg-gradient-to-l from-charcoal to-transparent" />
-
-        <div className="flex animate-marquee-slow gap-6 will-change-transform">
-          {loop.map((t, i) => (
+        <div className="mt-16 grid gap-5 md:grid-cols-3">
+          {PLACEHOLDERS.map((label, index) => (
             <motion.figure
-              key={i}
-              whileHover={{ y: -4 }}
-              className="flex w-[340px] shrink-0 flex-col justify-between rounded-2xl border border-ivory/10 bg-ivory/[0.02] p-8 backdrop-blur-sm transition-colors hover:border-gold/30 md:w-[420px]"
+              key={label}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.08 }}
+              className="rounded-lg border border-dashed border-ivory/15 bg-ivory/[0.02] p-8"
             >
-              <Quote size={28} className="text-gold/60" strokeWidth={1.5} />
-              <blockquote className="mt-4 font-serif text-xl italic leading-snug text-ivory/90 md:text-2xl">
-                &ldquo;{t.quote}&rdquo;
+              <Quote size={26} className="text-gold/60" strokeWidth={1.5} />
+              <blockquote className="mt-5 font-serif text-2xl italic leading-snug text-ivory/45">
+                Add a real, approved testimonial.
               </blockquote>
               <figcaption className="mt-6 border-t border-ivory/10 pt-4">
-                <div className="font-sans text-sm font-medium text-ivory">{t.name}</div>
-                <div className="mt-0.5 font-sans text-[10px] uppercase tracking-widest text-ivory/40">
-                  {t.role}
+                <div className="font-sans text-sm font-medium text-ivory/70">{label}</div>
+                <div className="mt-1 font-sans text-[10px] uppercase tracking-widest text-ivory/35">
+                  Placeholder only
                 </div>
               </figcaption>
             </motion.figure>

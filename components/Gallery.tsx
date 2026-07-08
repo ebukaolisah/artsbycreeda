@@ -7,6 +7,7 @@ const PIECES: ShowcasePiece[] = ARTWORKS.map((a) => ({
   id: a.id,
   title: a.title,
   src: a.src,
+  alt: a.alt,
   category: a.category,
   medium: a.medium,
   year: a.year,

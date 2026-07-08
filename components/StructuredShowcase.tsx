@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useEffect, useCallback, forwardRef } from 'react';
 import {
   motion,
@@ -23,6 +24,7 @@ export interface ShowcasePiece {
   id: string;
   title: string;
   src: string;
+  alt?: string;
   /** Short label that sits at the top-left of the card (e.g., "Portraits", "Pop") */
   category: string;
   /** Slightly longer line shown in the lightbox */
@@ -162,17 +164,23 @@ export default function StructuredShowcase({
           >
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[28px] md:rounded-[32px] border border-ivory/15 bg-charcoal shadow-[0_40px_140px_-40px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.06)] ring-1 ring-inset ring-ivory/[0.04]">
               <AnimatePresence mode="wait">
-                <motion.img
+                <motion.div
                   key={hero.id}
-                  src={hero.src}
-                  alt={hero.title}
                   initial={{ opacity: 0, scale: 1.05 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.98 }}
                   transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                  style={{ objectPosition: 'center top' }}
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
+                  className="absolute inset-0"
+                >
+                  <Image
+                    src={hero.src}
+                    alt={hero.alt || hero.title}
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 38vw, 100vw"
+                    className="object-cover object-top"
+                  />
+                </motion.div>
               </AnimatePresence>
 
               {/* Gradient veil for legibility */}
@@ -266,9 +274,10 @@ export default function StructuredShowcase({
               </span>
               <a
                 href={BRAND.orderPath}
+                data-track="order_click"
                 className="font-sans text-[11px] uppercase tracking-[0.18em] text-ivory/70 underline underline-offset-[6px] decoration-ivory/30 transition-colors hover:text-gold hover:decoration-gold"
               >
-                View All
+                Order Similar
               </a>
             </div>
 
@@ -343,7 +352,14 @@ export default function StructuredShowcase({
             >
               <div className="md:col-span-3">
                 <div className="overflow-hidden rounded-2xl border border-ivory/10">
-                  <img src={active.src} alt={active.title} className="h-auto w-full object-contain" />
+                  <Image
+                    src={active.src}
+                    alt={active.alt || active.title}
+                    width={1200}
+                    height={1500}
+                    sizes="(min-width: 768px) 58vw, 100vw"
+                    className="h-auto w-full object-contain"
+                  />
                 </div>
               </div>
               <div className="flex flex-col justify-center md:col-span-2">
@@ -373,7 +389,7 @@ export default function StructuredShowcase({
                     {active.description}
                   </p>
                 )}
-                <a href={BRAND.orderPath} className="btn-primary mt-8 self-start">
+                <a href={BRAND.orderPath} data-track="order_click" className="btn-primary mt-8 self-start">
                   Order a Similar Piece
                 </a>
               </div>
@@ -435,11 +451,13 @@ const PieceCard = forwardRef<
         className="relative block aspect-[4/5] w-full text-left"
         title="Click to view · double-click to promote to hero"
       >
-        <img
+        <Image
           src={piece.src}
-          alt={piece.title}
-          style={{ objectPosition: 'center top' }}
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+          alt={piece.alt || piece.title}
+          fill
+          loading="lazy"
+          sizes="(min-width: 1024px) 14vw, 50vw"
+          className="object-cover object-top transition-transform duration-700 group-hover:scale-110"
         />
         {/* Subtle vignette */}
         <div className="absolute inset-0 bg-gradient-to-b from-charcoal/55 via-transparent to-charcoal/85" />

@@ -17,7 +17,7 @@ import { motion } from 'framer-motion';
  * Pencil rotation + electric sweep both take exactly 6s so they stay in rhythm.
  */
 
-const TITLE = 'ART BY CREEDA';
+const TITLE = 'ARTS BY CREEDA';
 const LETTER_DELAY = 0.085; // seconds between each letter (typewriter speed)
 const TITLE_START = 1.6;
 
@@ -92,7 +92,7 @@ export default function AnimatedLogo() {
       </div>
 
       {/* ─────────────────  ART BY CREEDA  (typewriter + electric pulse)  ───────────────── */}
-      <h1
+      <div
         className="mt-8 flex items-baseline justify-center font-serif font-medium tracking-[0.08em] text-gold"
         style={{ fontSize: 'clamp(1.5rem, 4.2vw, 2.65rem)' }}
       >
@@ -151,7 +151,7 @@ export default function AnimatedLogo() {
         >
           ™
         </motion.sup>
-      </h1>
+      </div>
 
       {/* ─────────────────  Subtitle  ───────────────── */}
       <motion.div
