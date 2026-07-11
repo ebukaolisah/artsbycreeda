@@ -18,7 +18,7 @@ export const BRAND = {
     region: 'Lagos',
     country: 'Nigeria',
   },
-  whatsappUrl: process.env.NEXT_PUBLIC_WHATSAPP_URL || 'https://wa.me/message/4BQZE7RPHJXAN1',
+  whatsappUrl: process.env.NEXT_PUBLIC_WHATSAPP_URL || 'https://wa.me/qr/VGZIT2SBXMMNC1',
   socials: {
     instagram: 'https://instagram.com/artsbycreeda',
     facebook: 'https://facebook.com/artsbycreeda',
