@@ -41,6 +41,7 @@ const portfolioImage = '/artworks/custom-charcoal-portrait-burna-boy-african-gia
 const familyImage = '/artworks/legacy-family-charcoal-portrait-chief-patrick.png';
 const coupleImage = '/artworks/premium-digital-charcoal-portrait-faith-ojo.png';
 const detailImage = '/artworks/charcoal-pencil-portrait-detail-study.png';
+const kingCrownImage = '/artworks/regal-king-charcoal-portrait-crown.png';
 
 const commonTrust = [
   'High-resolution digital delivery',
@@ -148,8 +149,8 @@ export const SEO_PAGES: SeoLandingPageData[] = [
     h1: 'Digital charcoal portrait',
     intro:
       'A luxury portrait does not need to wait on shipping. Arts By Creeda creates high-resolution digital charcoal portraits that arrive by email, ready to print, frame, and gift anywhere in the world.',
-    image: detailImage,
-    imageAlt: 'Premium digital charcoal portrait artwork ready to print',
+    image: kingCrownImage,
+    imageAlt: 'Regal digital charcoal portrait of a man wearing a crown, ready to print',
     trust: commonTrust,
     sections: [
       {
