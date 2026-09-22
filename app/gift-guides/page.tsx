@@ -15,7 +15,7 @@ export const metadata: Metadata = createSeoMetadata({
   description:
     'Helpful buying guides for custom charcoal portraits, portrait gifts, digital printing, memorial portraits, and choosing the best reference photo.',
   path: '/gift-guides',
-  image: '/artworks/charcoal-pencil-portrait-detail-study.png',
+  image: '/artworks/custom-charcoal-portrait-burna-boy-african-giant.png',
   keywords: ['portrait guides', 'custom portrait gift ideas', 'digital charcoal portrait guide'],
 });
 

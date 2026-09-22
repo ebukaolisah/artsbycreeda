@@ -52,7 +52,7 @@ export default function About() {
               alt="Creeda — the artist behind ArtsByCreeda"
               onError={(e) => {
                 // Soft fallback until the photo is dropped into /public
-                (e.currentTarget as HTMLImageElement).src = '/artworks/charcoal-pencil-portrait-detail-study.png';
+                (e.currentTarget as HTMLImageElement).src = '/artworks/custom-charcoal-portrait-burna-boy-african-giant.png';
               }}
               className="h-full w-full object-cover grayscale-[10%] transition-all duration-700 group-hover:grayscale-0 group-hover:scale-[1.03]"
             />

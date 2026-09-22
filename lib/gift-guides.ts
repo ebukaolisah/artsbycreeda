@@ -37,8 +37,8 @@ export const GUIDE_ARTICLES: GuideArticle[] = [
     title: 'Best Photo to Send for a Charcoal Portrait',
     excerpt:
       'A premium portrait starts before the first stroke. The right reference photo gives the artist clearer likeness, stronger emotion, and a cleaner final file.',
-    image: '/artworks/charcoal-pencil-portrait-detail-study.png',
-    imageAlt: 'Best photo to send for a custom charcoal portrait from photo',
+    image: '/artworks/custom-charcoal-portrait-burna-boy-african-giant.png',
+    imageAlt: 'Burna Boy drawing showing the detail possible in a custom charcoal portrait',
     sections: [
       {
         heading: 'Choose clarity over drama',

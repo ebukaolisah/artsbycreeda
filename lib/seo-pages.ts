@@ -40,7 +40,6 @@ export type SeoLandingPageData = {
 const portfolioImage = '/artworks/custom-charcoal-portrait-burna-boy-african-giant.png';
 const familyImage = '/artworks/legacy-family-charcoal-portrait-chief-patrick.png';
 const coupleImage = '/artworks/premium-digital-charcoal-portrait-faith-ojo.png';
-const detailImage = '/artworks/charcoal-pencil-portrait-detail-study.png';
 const kingCrownImage = '/artworks/regal-king-charcoal-portrait-crown.png';
 
 const commonTrust = [
@@ -517,8 +516,8 @@ export const SEO_PAGES: SeoLandingPageData[] = [
     h1: 'How it works',
     intro:
       'The order flow is built to be simple: choose the portrait, send a strong photo, pay securely, and receive a high-resolution digital file ready for printing.',
-    image: detailImage,
-    imageAlt: 'How to order a custom digital charcoal portrait from photo',
+    image: portfolioImage,
+    imageAlt: 'Burna Boy custom charcoal portrait drawing by Arts By Creeda',
     trust: ['Clear order steps', 'Secure Paystack payment', 'Photo upload included', 'Email delivery'],
     sections: [
       {
@@ -561,8 +560,8 @@ export const SEO_PAGES: SeoLandingPageData[] = [
     h1: 'Portrait pricing',
     intro:
       'Choose the portrait size and delivery format that fits your gift, wall, or budget. Pricing is shown in Nigerian naira and the checkout flow calculates the final total before payment.',
-    image: detailImage,
-    imageAlt: 'Custom charcoal portrait pricing and print-ready digital delivery',
+    image: portfolioImage,
+    imageAlt: 'Burna Boy charcoal portrait illustrating premium custom portrait pricing',
     trust: ['No hidden fees in checkout', 'Soft copy pricing available', 'Framed pickup option shown where available', 'Photo restoration priced separately'],
     sections: [
       {
@@ -602,8 +601,8 @@ export const SEO_PAGES: SeoLandingPageData[] = [
     h1: 'Custom portrait FAQ',
     intro:
       'Everything buyers usually ask before ordering a custom digital charcoal portrait from Arts By Creeda: photo requirements, file delivery, printing, payment, revisions, and privacy.',
-    image: detailImage,
-    imageAlt: 'Custom digital charcoal portrait FAQ and ordering answers',
+    image: portfolioImage,
+    imageAlt: 'Burna Boy digital charcoal portrait by Arts By Creeda',
     trust: ['Clear buying answers', 'Print guidance included', 'Privacy-first photo handling', 'Worldwide delivery answers'],
     sections: [
       {
